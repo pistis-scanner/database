@@ -1,0 +1,4351 @@
+[
+  {
+    "schema_version": "1.4.0",
+    "id": "GHSA-7rrj-xr53-82p7",
+    "modified": "2023-01-06T21:40:58Z",
+    "published": "2023-01-06T21:40:58Z",
+    "aliases": [
+      "CVE-2023-22466"
+    ],
+    "summary": "Tokio reject_remote_clients configuration may get dropped when creating a Windows named pipe",
+    "details": "### Impact\n\nWhen configuring a Windows named pipe server, setting `pipe_mode` will reset `reject_remote_clients` to `false`. If the application has previously configured `reject_remote_clients` to `true`, this effectively undoes the configuration. This also applies if `reject_remote_clients` is not explicitly set as this is the default configuration and is cleared by calling `pipe_mode`.\n\nRemote clients may only access the named pipe if the named pipe's associated path is accessible via a publically shared folder (SMB).\n\n### Patches\n\nThe following versions have been patched:\n* 1.23.1\n* 1.20.3\n* 1.18.4\n\nThe fix will also be present in all releases starting from version 1.24.0.\n\nNamed pipes were introduced to Tokio in version 1.7.0, so releases older than 1.7.0 are not affected.\n\n### Workarounds\n\nEnsure that `pipe_mode` is set **first** after initializing a `ServerOptions`. For example:\n\n```rust\nlet mut opts = ServerOptions::new();\nopts.pipe_mode(PipeMode::Message);\nopts.reject_remote_clients(true);\n```\n\n### References\n\nhttps://learn.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-createnamedpipea#pipe_reject_remote_clients\n",
+    "severity": [
+      {
+        "type": "CVSS_V3",
+        "score": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:L/I:N/A:L"
+      }
+    ],
+    "affected": [
+      {
+        "package": {
+          "ecosystem": "crates.io",
+          "name": "tokio"
+        },
+        "ranges": [
+          {
+            "type": "ECOSYSTEM",
+            "events": [
+              {
+                "introduced": "1.7.0"
+              },
+              {
+                "fixed": "1.18.4"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "package": {
+          "ecosystem": "crates.io",
+          "name": "tokio"
+        },
+        "ranges": [
+          {
+            "type": "ECOSYSTEM",
+            "events": [
+              {
+                "introduced": "1.19.0"
+              },
+              {
+                "fixed": "1.20.3"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "package": {
+          "ecosystem": "crates.io",
+          "name": "tokio"
+        },
+        "ranges": [
+          {
+            "type": "ECOSYSTEM",
+            "events": [
+              {
+                "introduced": "1.21.0"
+              },
+              {
+                "fixed": "1.23.1"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "references": [
+      {
+        "type": "WEB",
+        "url": "https://github.com/tokio-rs/tokio/security/advisories/GHSA-7rrj-xr53-82p7"
+      },
+      {
+        "type": "ADVISORY",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2023-22466"
+      },
+      {
+        "type": "WEB",
+        "url": "https://github.com/tokio-rs/tokio/pull/5336"
+      },
+      {
+        "type": "PACKAGE",
+        "url": "https://github.com/tokio-rs/tokio"
+      },
+      {
+        "type": "WEB",
+        "url": "https://github.com/tokio-rs/tokio/releases/tag/tokio-1.23.1"
+      },
+      {
+        "type": "WEB",
+        "url": "https://learn.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-createnamedpipea#pipe_reject_remote_clients"
+      },
+      {
+        "type": "WEB",
+        "url": "https://rustsec.org/advisories/RUSTSEC-2023-0001.html"
+      }
+    ],
+    "database_specific": {
+      "cwe_ids": [
+        "CWE-665"
+      ],
+      "severity": "MODERATE",
+      "github_reviewed": true,
+      "github_reviewed_at": "2023-01-06T21:40:58Z",
+      "nvd_published_at": "2023-01-04T22:15:00Z",
+      "vulnerable_methods": [
+        "reject_remote_clients"
+      ]
+    }
+  },
+  {
+    "schema_version": "1.4.0",
+    "id": "GHSA-8v4j-7jgf-5rg9",
+    "modified": "2023-03-31T00:06:08Z",
+    "published": "2023-01-31T23:33:47Z",
+    "aliases": [],
+    "summary": "Warp vulnerable to Path Traversal via Improper validation of Windows paths",
+    "details": "Path resolution in `warp::filters::fs::dir` didn't correctly validate Windows paths meaning paths like `/foo/bar/c:/windows/web/screen/img101.png` would be allowed and respond with the contents of `c:/windows/web/screen/img101.png`. Thus users could potentially read files anywhere on the filesystem.\n\nThis only impacts Windows. Linux and other unix likes are not impacted by this.\n",
+    "severity": [],
+    "affected": [
+      {
+        "package": {
+          "ecosystem": "crates.io",
+          "name": "warp"
+        },
+        "ranges": [
+          {
+            "type": "ECOSYSTEM",
+            "events": [
+              {
+                "introduced": "0"
+              },
+              {
+                "fixed": "0.3.3"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "references": [
+      {
+        "type": "WEB",
+        "url": "https://github.com/seanmonstar/warp/issues/937"
+      },
+      {
+        "type": "WEB",
+        "url": "https://github.com/seanmonstar/warp/pull/997"
+      },
+      {
+        "type": "WEB",
+        "url": "https://github.com/seanmonstar/warp/commit/0074a0a3e98786509259bfe3821d3b3f094257aa"
+      },
+      {
+        "type": "PACKAGE",
+        "url": "https://github.com/seanmonstar/warp"
+      },
+      {
+        "type": "WEB",
+        "url": "https://rustsec.org/advisories/RUSTSEC-2022-0082.html"
+      }
+    ],
+    "database_specific": {
+      "cwe_ids": [
+        "CWE-22"
+      ],
+      "severity": "HIGH",
+      "github_reviewed": true,
+      "github_reviewed_at": "2023-01-31T23:33:47Z",
+      "nvd_published_at": null,
+      "vulnerable_methods": [
+        "dir"
+      ]
+    }
+  },
+  {
+    "schema_version": "1.4.0",
+    "id": "GHSA-96jv-r488-c2rj",
+    "modified": "2023-01-13T17:18:40Z",
+    "published": "2023-01-10T03:30:29Z",
+    "aliases": [
+      "CVE-2023-22895"
+    ],
+    "summary": "bzip2 allows attackers to cause a denial of service via a large file that triggers an integer overflow",
+    "details": "The bzip2 crate before 0.4.4 for Rust allow attackers to cause a denial of service via a large file that triggers an integer overflow in `mem.rs`. NOTE: this is unrelated to the https://crates.io/crates/bzip2-rs product.",
+    "severity": [
+      {
+        "type": "CVSS_V3",
+        "score": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+      }
+    ],
+    "affected": [
+      {
+        "package": {
+          "ecosystem": "crates.io",
+          "name": "bzip2"
+        },
+        "ranges": [
+          {
+            "type": "ECOSYSTEM",
+            "events": [
+              {
+                "introduced": "0"
+              },
+              {
+                "fixed": "0.4.4"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "references": [
+      {
+        "type": "ADVISORY",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2023-22895"
+      },
+      {
+        "type": "WEB",
+        "url": "https://github.com/alexcrichton/bzip2-rs/pull/86"
+      },
+      {
+        "type": "WEB",
+        "url": "https://github.com/alexcrichton/bzip2-rs/commit/90c9c182cd5a5ebc75810aebd89b347a7bdf590b"
+      },
+      {
+        "type": "WEB",
+        "url": "https://crates.io/crates/bzip2/versions"
+      },
+      {
+        "type": "PACKAGE",
+        "url": "https://github.com/alexcrichton/bzip2-rs"
+      },
+      {
+        "type": "WEB",
+        "url": "https://lists.fedoraproject.org/archives/list/package-announce@lists.fedoraproject.org/message/MI5SVRSGKBWB2JGDLDVIFY5ZQVDZP6I7/"
+      },
+      {
+        "type": "WEB",
+        "url": "https://lists.fedoraproject.org/archives/list/package-announce@lists.fedoraproject.org/message/SQK57GGXJX3AH7KF6S7S3N7JC5QOYUQ7/"
+      },
+      {
+        "type": "WEB",
+        "url": "https://lists.fedoraproject.org/archives/list/package-announce@lists.fedoraproject.org/message/UUK2JO25PPA6XBREKJRBLRCD22LKIOLO/"
+      },
+      {
+        "type": "WEB",
+        "url": "https://rustsec.org/advisories/RUSTSEC-2023-0004.html"
+      }
+    ],
+    "database_specific": {
+      "cwe_ids": [
+        "CWE-190"
+      ],
+      "severity": "HIGH",
+      "github_reviewed": true,
+      "github_reviewed_at": "2023-01-10T22:10:17Z",
+      "nvd_published_at": "2023-01-10T01:15:00Z",
+      "vulnerable_methods": [
+        "mem.rs"
+      ]
+    }
+  },
+  {
+    "schema_version": "1.4.0",
+    "id": "GHSA-f85w-wvc7-crwc",
+    "modified": "2023-01-20T21:54:22Z",
+    "published": "2023-01-20T21:54:22Z",
+    "aliases": [],
+    "summary": "bumpalo has use-after-free due to a lifetime error in `Vec::into_iter()`",
+    "details": "In affected versions of this crate, the lifetime of the iterator produced by `Vec::into_iter()` is not constrained to the lifetime of the `Bump` that allocated the vector's memory. Using the iterator after the `Bump` is dropped causes use-after-free accesses.\n\nThe following example demonstrates memory corruption arising from a misuse of this unsoundness.\n\n```rust\nuse bumpalo::{collections::Vec, Bump};\n\nfn main() {\n    let bump = Bump::new();\n    let mut vec = Vec::new_in(&bump);\n    vec.extend([0x01u8; 32]);\n    let into_iter = vec.into_iter();\n    drop(bump);\n\n    for _ in 0..100 {\n        let reuse_bump = Bump::new();\n        let _reuse_alloc = reuse_bump.alloc([0x41u8; 10]);\n    }\n\n    for x in into_iter {\n        print!(\"0x{:02x} \", x);\n    }\n    println!();\n}\n```\n\nThe issue was corrected in version 3.11.1 by adding a lifetime to the `IntoIter` type, and updating the signature of `Vec::into_iter()` to constrain this lifetime.\n",
+    "severity": [],
+    "affected": [
+      {
+        "package": {
+          "ecosystem": "crates.io",
+          "name": "bumpalo"
+        },
+        "ranges": [
+          {
+            "type": "ECOSYSTEM",
+            "events": [
+              {
+                "introduced": "1.1.0"
+              },
+              {
+                "fixed": "3.11.1"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "references": [
+      {
+        "type": "PACKAGE",
+        "url": "https://github.com/fitzgen/bumpalo"
+      },
+      {
+        "type": "WEB",
+        "url": "https://github.com/fitzgen/bumpalo/blob/main/CHANGELOG.md#3111"
+      },
+      {
+        "type": "WEB",
+        "url": "https://rustsec.org/advisories/RUSTSEC-2022-0078.html"
+      }
+    ],
+    "database_specific": {
+      "cwe_ids": [],
+      "severity": "MODERATE",
+      "github_reviewed": true,
+      "github_reviewed_at": "2023-01-20T21:54:22Z",
+      "nvd_published_at": null
+    }
+  },
+  {
+    "schema_version": "1.4.0",
+    "id": "GHSA-g6pw-999w-j75m",
+    "modified": "2023-01-20T22:41:01Z",
+    "published": "2023-01-20T22:41:01Z",
+    "aliases": [],
+    "summary": "ELF header parsing library doesn't check for valid offset",
+    "details": "The crate has several unsafe sections that don't perform proper pointer validation.\n\nAn example can be found in the following function:\n\n```\nfn section_header_raw(&self) -> &[ET::SectionHeader] {\n    let sh_off = self.elf_header().section_header_offset() as usize;\n    let sh_num = self.elf_header().section_header_entry_num() as usize;\n    unsafe {\n        let sh_ptr = self.content().as_ptr().add(sh_off);\n        from_raw_parts(sh_ptr as *const ET::SectionHeader, sh_num)\n    }\n}\n```\n\nWhile this will work perfectly fine *if* the ELF header is valid, malicious or malformed input can contain a section header offset of an arbitrary size, meaning that the resultant pointer in the unsafe block can point to an artibrary address in the address space of the process.\n\nThis can result in unpredictable behaviour, and in our fuzz testing, we discovered that it's trivial to cause SIGABRT (signal 6), or SEGV (signal 11).\n\nThe function should either be marked as unsafe, with a note that the caller is responsible for providing only valid inputs, or it should ideally do the due diligence to ensure that the offset doesn't exceed the bounds of the header (and add additional checks as necessary).\n\n",
+    "severity": [],
+    "affected": [
+      {
+        "package": {
+          "ecosystem": "crates.io",
+          "name": "elf_rs"
+        },
+        "ranges": [
+          {
+            "type": "ECOSYSTEM",
+            "events": [
+              {
+                "introduced": "0"
+              },
+              {
+                "fixed": "0.3.0"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "references": [
+      {
+        "type": "WEB",
+        "url": "https://github.com/vincenthouyi/elf_rs/issues/11"
+      },
+      {
+        "type": "PACKAGE",
+        "url": "https://github.com/vincenthouyi/elf_rs"
+      },
+      {
+        "type": "WEB",
+        "url": "https://rustsec.org/advisories/RUSTSEC-2022-0079.html"
+      }
+    ],
+    "database_specific": {
+      "cwe_ids": [],
+      "severity": "MODERATE",
+      "github_reviewed": true,
+      "github_reviewed_at": "2023-01-20T22:41:01Z",
+      "nvd_published_at": null,
+      "vulnerable_methods": [
+        "section_header_raw"
+      ]
+    }
+  },
+  {
+    "schema_version": "1.4.0",
+    "id": "GHSA-m4ch-rfv5-x5g3",
+    "modified": "2023-01-20T23:36:41Z",
+    "published": "2023-01-20T23:36:41Z",
+    "aliases": [],
+    "summary": "git2-rs fails to verify SSH keys by default",
+    "details": "The git2 and libgit2-sys crates are Rust wrappers around the [libgit2](https://libgit2.org/) C library. It was discovered that libgit2 1.5.0 and below did not verify SSH host keys when establishing an SSH connection, exposing users of the library to Man-In-the-Middle attacks.\n\nThe libgit2 team assigned [CVE-2023-22742](https://github.com/libgit2/libgit2/security/advisories/GHSA-8643-3wh5-rmjq) to this vulnerability. The following versions of the libgit2-sys Rust crate have been released:\n\n* libgit2-sys 0.14.2, updating the underlying libgit2 C library to version 1.5.1.\n* libgit2-sys 0.13.5, updating the underlying libgit2 C library to version 1.4.5.\n\nA new git2 crate version has also been released, 0.16.1. This version only bumps its libgit2-sys dependency to ensure no vulnerable libgit2-sys versions are used, but contains no code changes: if you update the libgit2-sys version there is no need to also update the git2 crate version.\n\n[You can learn more about this vulnerability in libgit2's advisory](https://github.com/libgit2/libgit2/security/advisories/GHSA-8643-3wh5-rmjq)",
+    "severity": [
+      {
+        "type": "CVSS_V3",
+        "score": "CVSS:3.1/AV:N/AC:H/PR:N/UI:R/S:U/C:H/I:H/A:N"
+      }
+    ],
+    "affected": [
+      {
+        "package": {
+          "ecosystem": "crates.io",
+          "name": "libgit2-sys"
+        },
+        "ranges": [
+          {
+            "type": "ECOSYSTEM",
+            "events": [
+              {
+                "introduced": "0.14.0"
+              },
+              {
+                "fixed": "0.14.2"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "package": {
+          "ecosystem": "crates.io",
+          "name": "libgit2-sys"
+        },
+        "ranges": [
+          {
+            "type": "ECOSYSTEM",
+            "events": [
+              {
+                "introduced": "0"
+              },
+              {
+                "fixed": "0.13.5"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "package": {
+          "ecosystem": "crates.io",
+          "name": "git2"
+        },
+        "ranges": [
+          {
+            "type": "ECOSYSTEM",
+            "events": [
+              {
+                "introduced": "0"
+              },
+              {
+                "fixed": "0.16.1"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "references": [
+      {
+        "type": "WEB",
+        "url": "https://github.com/libgit2/libgit2/security/advisories/GHSA-8643-3wh5-rmjq"
+      },
+      {
+        "type": "WEB",
+        "url": "https://github.com/rust-lang/git2-rs/security/advisories/GHSA-m4ch-rfv5-x5g3"
+      },
+      {
+        "type": "ADVISORY",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2023-22742"
+      },
+      {
+        "type": "WEB",
+        "url": "https://github.com/rust-lang/git2-rs/commit/87934f87d36753ed702792ec063be7246444a8e1"
+      },
+      {
+        "type": "PACKAGE",
+        "url": "https://github.com/rust-lang/git2-rs"
+      },
+      {
+        "type": "WEB",
+        "url": "https://rustsec.org/advisories/RUSTSEC-2023-0003.html"
+      }
+    ],
+    "database_specific": {
+      "cwe_ids": [],
+      "severity": "MODERATE",
+      "github_reviewed": true,
+      "github_reviewed_at": "2023-01-20T23:36:41Z",
+      "nvd_published_at": null
+    }
+  },
+  {
+    "schema_version": "1.4.0",
+    "id": "GHSA-m589-mv4q-p7rj",
+    "modified": "2023-01-23T18:49:42Z",
+    "published": "2023-01-13T21:30:26Z",
+    "aliases": [
+      "CVE-2022-45299"
+    ],
+    "summary": "webbrowser-rs allows attackers to access arbitrary files via supplying a crafted URL",
+    "details": "An issue in the IpFile argument of rust-lang webbrowser-rs v0.8.2 allows attackers to access arbitrary files via supplying a crafted URL.",
+    "severity": [
+      {
+        "type": "CVSS_V3",
+        "score": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H"
+      }
+    ],
+    "affected": [
+      {
+        "package": {
+          "ecosystem": "crates.io",
+          "name": "webbrowser"
+        },
+        "ranges": [
+          {
+            "type": "ECOSYSTEM",
+            "events": [
+              {
+                "introduced": "0"
+              },
+              {
+                "fixed": "0.8.3"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "references": [
+      {
+        "type": "ADVISORY",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2022-45299"
+      },
+      {
+        "type": "PACKAGE",
+        "url": "https://github.com/amodm/webbrowser-rs"
+      },
+      {
+        "type": "WEB",
+        "url": "https://github.com/amodm/webbrowser-rs/releases/tag/v0.8.3"
+      },
+      {
+        "type": "WEB",
+        "url": "https://github.com/offalltn/CVE-2022-45299"
+      }
+    ],
+    "database_specific": {
+      "cwe_ids": [
+        "CWE-22"
+      ],
+      "severity": "CRITICAL",
+      "github_reviewed": true,
+      "github_reviewed_at": "2023-01-14T05:18:53Z",
+      "nvd_published_at": "2023-01-13T21:15:00Z",
+      "vulnerable_methods": [
+        "IpFile"
+      ]
+    }
+  },
+  {
+    "schema_version": "1.4.0",
+    "id": "GHSA-mc52-jpm2-cqh6",
+    "modified": "2023-04-03T19:15:49Z",
+    "published": "2023-01-20T16:56:40Z",
+    "aliases": [
+      "CVE-2023-22499"
+    ],
+    "summary": "Deno is vulnerable to race condition via interactive permission prompt spoofing",
+    "details": "### Impact\n\nMulti-threaded programs were able to spoof interactive permission prompt by rewriting the prompt to suggest that program is waiting on user confirmation to unrelated action. \n\nA malicious program could clear the terminal screen after permission prompt was shown and write a generic message like so:\n```\n// Expected prompt\n⚠️  ┌ Deno requests read access to \"./log.txt\".\n   ├ Requested by `Deno.open()` API\n   ├ Run again with --allow-read to bypass this prompt.\n   └ Allow? [y/n] (y = yes, allow; n = no, deny) >\n\n// Prompt that users would see\nDo you want to continue?\n```\n\nThis situation impacts users who use Web Worker API and relied on interactive permission prompt. The reproduction is very timing sensitive and can’t be reliably reproduced on every try.\n\nThis problem can not be exploited on systems that do not attach an interactive prompt (for example headless servers). \n\n### Patches\n\nThe problem has been fixed in Deno v1.29.3; it is recommended all users update to this version.\n\n### Workarounds\n\nRun with `--no-prompt` flag to disable interactive permission prompts.\n",
+    "severity": [
+      {
+        "type": "CVSS_V3",
+        "score": "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:H/I:H/A:H"
+      }
+    ],
+    "affected": [
+      {
+        "package": {
+          "ecosystem": "crates.io",
+          "name": "deno"
+        },
+        "ranges": [
+          {
+            "type": "ECOSYSTEM",
+            "events": [
+              {
+                "introduced": "1.9.0"
+              },
+              {
+                "fixed": "1.29.3"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "references": [
+      {
+        "type": "WEB",
+        "url": "https://github.com/denoland/deno/security/advisories/GHSA-mc52-jpm2-cqh6"
+      },
+      {
+        "type": "ADVISORY",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2023-22499"
+      },
+      {
+        "type": "WEB",
+        "url": "https://github.com/denoland/deno/pull/17392"
+      },
+      {
+        "type": "PACKAGE",
+        "url": "https://github.com/denoland/deno"
+      }
+    ],
+    "database_specific": {
+      "cwe_ids": [
+        "CWE-362"
+      ],
+      "severity": "HIGH",
+      "github_reviewed": true,
+      "github_reviewed_at": "2023-01-20T16:56:40Z",
+      "nvd_published_at": "2023-01-17T21:15:00Z",
+      "vulnerable_methods": [
+        "open"
+      ]
+    }
+  },
+  {
+    "schema_version": "1.4.0",
+    "id": "GHSA-r5w3-xm58-jv6j",
+    "modified": "2023-01-10T22:01:00Z",
+    "published": "2023-01-10T21:09:31Z",
+    "aliases": [
+      "CVE-2022-46176"
+    ],
+    "summary": "Cargo did not verify SSH host keys",
+    "details": "The Rust Security Response WG was notified that Cargo did not perform SSH host key verification when cloning indexes and dependencies via SSH. An attacker could exploit this to perform man-in-the-middle (MITM) attacks.\n\nThis vulnerability has been assigned CVE-2022-46176.\n\n## Overview\n\nWhen an SSH client establishes communication with a server, to prevent MITM attacks the client should check whether it already communicated with that server in the past and what the server's public key was back then. If the key changed since the last connection, the connection must be aborted as a MITM attack is likely taking place.\n\nIt was discovered that Cargo never implemented such checks, and performed no validation on the server's public key, leaving Cargo users vulnerable to MITM attacks.\n\n## Affected Versions\n\nAll Rust versions containing Cargo before 1.66.1 are vulnerable (prior to 0.67.1 for the crates.io package).\n\nNote that even if you don't explicitly use SSH for alternate registry indexes or crate dependencies, you might be affected by this vulnerability if you have configured git to replace HTTPS connections to GitHub with SSH (through git's [`url.<base>.insteadOf`][1] setting), as that'd cause you to clone the crates.io index through SSH.\n\n## Mitigations\n\nWe will be releasing Rust 1.66.1 today, 2023-01-10, changing Cargo to check the SSH host key and abort the connection if the server's public key is not already trusted. We recommend everyone to upgrade as soon as possible.\n\nPatch files for Rust 1.66.0 are also available [here][2] for custom-built toolchains.\n\nFor the time being Cargo will not ask the user whether to trust a server's public key during the first connection. Instead, Cargo will show an error message detailing how to add that public key to the list of trusted keys. Note that this might break your automated builds if the hosts you clone dependencies or indexes from are not already trusted.\n\nIf you can't upgrade to Rust 1.66.1 yet, we recommend configuring Cargo to use the `git` CLI instead of its built-in git support. That way, all git network operations will be performed by the `git` CLI, which is not affected by this vulnerability. You can do so by adding this snippet to your [Cargo configuration file](https://doc.rust-lang.org/cargo/reference/config.html):\n\n```toml\n[net]\ngit-fetch-with-cli = true\n```\n\n## Acknowledgments\n\nThanks to the Julia Security Team for disclosing this to us according to our [security policy][3]!\n\nWe also want to thank the members of the Rust project who contributed to fixing this issue. Thanks to Eric Huss and Weihang Lo for writing and reviewing the patch, Pietro Albini for coordinating the disclosure and writing this advisory, and Josh Stone, Josh Triplett and Jacob Finkelman for advising during the disclosure.\n\n[1]: https://git-scm.com/docs/git-config#Documentation/git-config.txt-urlltbasegtinsteadOf\n[2]: https://github.com/rust-lang/wg-security-response/tree/main/patches/CVE-2022-46176\n[3]: https://www.rust-lang.org/policies/security",
+    "severity": [
+      {
+        "type": "CVSS_V3",
+        "score": "CVSS:3.1/AV:N/AC:H/PR:N/UI:R/S:U/C:N/I:H/A:N"
+      }
+    ],
+    "affected": [
+      {
+        "package": {
+          "ecosystem": "crates.io",
+          "name": "cargo"
+        },
+        "ranges": [
+          {
+            "type": "ECOSYSTEM",
+            "events": [
+              {
+                "introduced": "0"
+              },
+              {
+                "fixed": "0.67.1"
+              }
+            ]
+          }
+        ],
+        "database_specific": {
+          "last_known_affected_version_range": "<= 0.67.0"
+        }
+      }
+    ],
+    "references": [
+      {
+        "type": "WEB",
+        "url": "https://github.com/rust-lang/cargo/security/advisories/GHSA-r5w3-xm58-jv6j"
+      },
+      {
+        "type": "ADVISORY",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2022-46176"
+      },
+      {
+        "type": "WEB",
+        "url": "https://git-scm.com/docs/git-config#Documentation/git-config.txt-urlltbasegtinsteadOf"
+      },
+      {
+        "type": "PACKAGE",
+        "url": "https://github.com/rust-lang/cargo"
+      },
+      {
+        "type": "WEB",
+        "url": "https://github.com/rust-lang/wg-security-response/tree/main/patches/CVE-2022-46176"
+      },
+      {
+        "type": "WEB",
+        "url": "https://www.rust-lang.org/policies/security"
+      }
+    ],
+    "database_specific": {
+      "cwe_ids": [
+        "CWE-347"
+      ],
+      "severity": "MODERATE",
+      "github_reviewed": true,
+      "github_reviewed_at": "2023-01-10T21:09:31Z",
+      "nvd_published_at": "2023-01-11T21:15:00Z"
+    }
+  },
+  {
+    "schema_version": "1.4.0",
+    "id": "GHSA-29xx-hcv2-c4cp",
+    "modified": "2023-02-21T20:00:22Z",
+    "published": "2023-02-08T22:23:39Z",
+    "aliases": [
+      "CVE-2023-0216"
+    ],
+    "summary": "openssl-src subject to Invalid pointer dereference in `d2i_PKCS7` functions",
+    "details": "An invalid pointer dereference on read can be triggered when an application tries to load malformed PKCS7 data with the `d2i_PKCS7()`, `d2i_PKCS7_bio()` or `d2i_PKCS7_fp()` functions.\n\nThe result of the dereference is an application crash which could lead to a denial of service attack. The TLS implementation in OpenSSL does not call this function however third party applications might call these functions on untrusted data.\n",
+    "severity": [
+      {
+        "type": "CVSS_V3",
+        "score": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+      }
+    ],
+    "affected": [
+      {
+        "package": {
+          "ecosystem": "crates.io",
+          "name": "openssl-src"
+        },
+        "ranges": [
+          {
+            "type": "ECOSYSTEM",
+            "events": [
+              {
+                "introduced": "300.0.0"
+              },
+              {
+                "fixed": "300.0.12"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "references": [
+      {
+        "type": "ADVISORY",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2023-0216"
+      },
+      {
+        "type": "WEB",
+        "url": "https://git.openssl.org/gitweb/?p=openssl.git;a=commitdiff;h=934a04f0e775309cadbef0aa6b9692e1b12a76c6"
+      },
+      {
+        "type": "WEB",
+        "url": "https://rustsec.org/advisories/RUSTSEC-2023-0011.html"
+      },
+      {
+        "type": "WEB",
+        "url": "https://www.openssl.org/news/secadv/20230207.txt"
+      }
+    ],
+    "database_specific": {
+      "cwe_ids": [
+        "CWE-476"
+      ],
+      "severity": "HIGH",
+      "github_reviewed": true,
+      "github_reviewed_at": "2023-02-08T22:23:39Z",
+      "nvd_published_at": "2023-02-08T20:15:00Z"
+    }
+  },
+  {
+    "schema_version": "1.4.0",
+    "id": "GHSA-4q83-7cq4-p6wg",
+    "modified": "2023-02-04T00:30:37Z",
+    "published": "2023-02-04T00:30:37Z",
+    "aliases": [],
+    "summary": "`tokio::io::ReadHalf<T>::unsplit` is Unsound",
+    "details": "`tokio::io::ReadHalf<T>::unsplit` can violate the `Pin` contract\n\nThe soundness issue is described in the [tokio/issues#5372](https://github.com/tokio-rs/tokio/issues/5372)\n\nSpecific set of conditions needed to trigger an issue (a !Unpin type in ReadHalf)\nis unusual, combined with the difficulty of making any arbitrary use-after-free\nexploitable in Rust without doing a lot of careful alignment of data types in\nthe surrounding code.\n\nThe `tokio` feature `io-util` is also required to be enabled to trigger this\nsoundness issue.\n\nThanks to zachs18 reporting the issue to Tokio team responsibly and taiki-e\nand carllerche appropriately responding and fixing the soundness bug.\n\nTokio before 0.2.0 used `futures` 0.1 that did not have `Pin`, so it is not\naffected by this issue.\n",
+    "severity": [],
+    "affected": [
+      {
+        "package": {
+          "ecosystem": "crates.io",
+          "name": "tokio"
+        },
+        "ranges": [
+          {
+            "type": "ECOSYSTEM",
+            "events": [
+              {
+                "introduced": "1.21.0"
+              },
+              {
+                "fixed": "1.24.2"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "package": {
+          "ecosystem": "crates.io",
+          "name": "tokio"
+        },
+        "ranges": [
+          {
+            "type": "ECOSYSTEM",
+            "events": [
+              {
+                "introduced": "1.19.0"
+              },
+              {
+                "fixed": "1.20.4"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "package": {
+          "ecosystem": "crates.io",
+          "name": "tokio"
+        },
+        "ranges": [
+          {
+            "type": "ECOSYSTEM",
+            "events": [
+              {
+                "introduced": "0.2.0"
+              },
+              {
+                "fixed": "1.18.5"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "references": [
+      {
+        "type": "WEB",
+        "url": "https://github.com/tokio-rs/tokio/issues/5372"
+      },
+      {
+        "type": "PACKAGE",
+        "url": "https://github.com/tokio-rs/tokio"
+      },
+      {
+        "type": "WEB",
+        "url": "https://rustsec.org/advisories/RUSTSEC-2023-0005.html"
+      }
+    ],
+    "database_specific": {
+      "cwe_ids": [],
+      "severity": "LOW",
+      "github_reviewed": true,
+      "github_reviewed_at": "2023-02-04T00:30:37Z",
+      "nvd_published_at": null
+    }
+  },
+  {
+    "schema_version": "1.4.0",
+    "id": "GHSA-5x36-7567-3cw6",
+    "modified": "2023-02-28T20:31:05Z",
+    "published": "2023-02-28T20:31:05Z",
+    "aliases": [],
+    "summary": "partial_sort contains Out-of-bounds Read in release mode",
+    "details": "Affected versions of this crate were using a debug assertion to validate the `last` parameter of `partial_sort()`. This would allow invalid inputs to cause an out-of-bounds read instead of immediately panicking, when compiled without debug assertions.\n\nAll writes are bounds-checked, so the out-of-bounds memory access is read-only. This also means that the first attempted out-of-bounds write will panic, limiting the possible reads.\n\nThe accessible region is further limited by an initial bounds-checked read at `(last / 2) - 1`, i.e., it is proportional to the size of the vector.\n\nThis bug has been fixed in v0.2.0.\n",
+    "severity": [],
+    "affected": [
+      {
+        "package": {
+          "ecosystem": "crates.io",
+          "name": "partial_sort"
+        },
+        "ranges": [
+          {
+            "type": "ECOSYSTEM",
+            "events": [
+              {
+                "introduced": "0"
+              },
+              {
+                "fixed": "0.2.0"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "references": [
+      {
+        "type": "WEB",
+        "url": "https://github.com/sundy-li/partial_sort/issues/7"
+      },
+      {
+        "type": "PACKAGE",
+        "url": "https://github.com/sundy-li/partial_sort"
+      },
+      {
+        "type": "WEB",
+        "url": "https://rustsec.org/advisories/RUSTSEC-2023-0016.html"
+      }
+    ],
+    "database_specific": {
+      "cwe_ids": [
+        "CWE-125"
+      ],
+      "severity": "MODERATE",
+      "github_reviewed": true,
+      "github_reviewed_at": "2023-02-28T20:31:05Z",
+      "nvd_published_at": null
+    }
+  },
+  {
+    "schema_version": "1.4.0",
+    "id": "GHSA-cf4g-fcf8-3cr9",
+    "modified": "2023-02-09T19:27:57Z",
+    "published": "2023-02-09T19:27:57Z",
+    "aliases": [],
+    "summary": "`pnet_packet` buffer overrun in `set_payload` setters",
+    "details": "As indicated by this [issue](https://github.com/libpnet/libpnet/issues/449#issuecomment-663355987), a buffer overrun is possible in the `set_payload` setter of the various mutable \"Packet\" struct setters. The offending `set_payload` functions were defined within the struct `impl` blocks in earlier versions of the package, and later by the `packet` macro.\n\nFixed in the `packet` macro by [this](https://github.com/libpnet/libpnet/pull/455) PR.\n",
+    "severity": [
+      {
+        "type": "CVSS_V3",
+        "score": "CVSS:3.0/AV:L/AC:L/PR:H/UI:N/S:U/C:N/I:H/A:H"
+      }
+    ],
+    "affected": [
+      {
+        "package": {
+          "ecosystem": "crates.io",
+          "name": "pnet_packet"
+        },
+        "ranges": [
+          {
+            "type": "ECOSYSTEM",
+            "events": [
+              {
+                "introduced": "0"
+              },
+              {
+                "fixed": "0.27.2"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "references": [
+      {
+        "type": "WEB",
+        "url": "https://github.com/libpnet/libpnet/issues/449"
+      },
+      {
+        "type": "PACKAGE",
+        "url": "https://github.com/libpnet/libpnet"
+      },
+      {
+        "type": "WEB",
+        "url": "https://rustsec.org/advisories/RUSTSEC-2020-0167.html"
+      }
+    ],
+    "database_specific": {
+      "cwe_ids": [],
+      "severity": "MODERATE",
+      "github_reviewed": true,
+      "github_reviewed_at": "2023-02-09T19:27:57Z",
+      "nvd_published_at": null
+    }
+  },
+  {
+    "schema_version": "1.4.0",
+    "id": "GHSA-fjj4-2q73-jvgc",
+    "modified": "2023-02-08T18:15:28Z",
+    "published": "2023-02-08T18:15:28Z",
+    "aliases": [],
+    "summary": "Nervos CKB calculation of program load cycles may be missed when executing in resume mode",
+    "details": "### Impact\nThe calculation of program load cycles may be missed when executing in resume mode. Since the script execution order is now determined, this issue does not cause network splitting.\n\n\n",
+    "severity": [],
+    "affected": [
+      {
+        "package": {
+          "ecosystem": "crates.io",
+          "name": "ckb"
+        },
+        "ranges": [
+          {
+            "type": "ECOSYSTEM",
+            "events": [
+              {
+                "introduced": "0.100.0"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "references": [
+      {
+        "type": "WEB",
+        "url": "https://github.com/nervosnetwork/ckb/security/advisories/GHSA-fjj4-2q73-jvgc"
+      },
+      {
+        "type": "PACKAGE",
+        "url": "https://github.com/nervosnetwork/ckb"
+      }
+    ],
+    "database_specific": {
+      "cwe_ids": [],
+      "severity": "LOW",
+      "github_reviewed": true,
+      "github_reviewed_at": "2023-02-08T18:15:28Z",
+      "nvd_published_at": null
+    }
+  },
+  {
+    "schema_version": "1.4.0",
+    "id": "GHSA-mc8h-8q98-g5hr",
+    "modified": "2023-02-24T16:23:59Z",
+    "published": "2023-02-24T16:23:59Z",
+    "aliases": [],
+    "summary": "Race Condition Enabling Link Following and Time-of-check Time-of-use (TOCTOU) Race Condition in remove_dir_all",
+    "details": "The `remove_dir_all` crate is a Rust library that offers additional features over the Rust standard library `fs::remove_dir_all` function. It suffers the same class of failure as the code it was layering over: TOCTOU race conditions, with the ability to cause arbitrary paths to be deleted by substituting a symlink for a path after the type of the path was checked.\n\nThanks to the Rust security team for identifying the problem and alerting us to it.",
+    "severity": [],
+    "affected": [
+      {
+        "package": {
+          "ecosystem": "crates.io",
+          "name": "remove_dir_all"
+        },
+        "ranges": [
+          {
+            "type": "ECOSYSTEM",
+            "events": [
+              {
+                "introduced": "0"
+              },
+              {
+                "fixed": "0.8.0"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "references": [
+      {
+        "type": "WEB",
+        "url": "https://github.com/XAMPPRocky/remove_dir_all/security/advisories/GHSA-mc8h-8q98-g5hr"
+      },
+      {
+        "type": "WEB",
+        "url": "https://github.com/XAMPPRocky/remove_dir_all/commit/7247a8b6ee59fc99bbb69ca6b3ca4bfd8c809ead"
+      },
+      {
+        "type": "PACKAGE",
+        "url": "https://github.com/XAMPPRocky/remove_dir_all"
+      },
+      {
+        "type": "WEB",
+        "url": "https://rustsec.org/advisories/RUSTSEC-2023-0018.html"
+      }
+    ],
+    "database_specific": {
+      "cwe_ids": [
+        "CWE-366",
+        "CWE-367"
+      ],
+      "severity": "LOW",
+      "github_reviewed": true,
+      "github_reviewed_at": "2023-02-24T16:23:59Z",
+      "nvd_published_at": null,
+      "vulnerable_methods": [
+        "remove_dir_all"
+      ]
+    }
+  },
+  {
+    "schema_version": "1.4.0",
+    "id": "GHSA-mrrw-grhq-86gf",
+    "modified": "2023-02-28T20:30:10Z",
+    "published": "2023-02-28T20:30:10Z",
+    "aliases": [],
+    "summary": "Ascii (crate) allows out-of-bounds array indexing in safe code",
+    "details": "Affected version of this crate had implementation of `From<&mut AsciiStr>` for `&mut [u8]` and `&mut str`. This can result in out-of-bounds array indexing in safe code.\n\nThe flaw was corrected in commit [8a6c779](https://github.com/tomprogrammer/rust-ascii/pull/63/commits/8a6c7798c202766bd57d70fb8d12739dd68fb9dc) by removing those impls.\n",
+    "severity": [],
+    "affected": [
+      {
+        "package": {
+          "ecosystem": "crates.io",
+          "name": "ascii"
+        },
+        "ranges": [
+          {
+            "type": "ECOSYSTEM",
+            "events": [
+              {
+                "introduced": "0.6.0"
+              },
+              {
+                "fixed": "0.9.3"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "references": [
+      {
+        "type": "WEB",
+        "url": "https://github.com/tomprogrammer/rust-ascii/issues/64"
+      },
+      {
+        "type": "WEB",
+        "url": "https://github.com/tomprogrammer/rust-ascii/pull/63/commits/8a6c7798c202766bd57d70fb8d12739dd68fb9dc"
+      },
+      {
+        "type": "PACKAGE",
+        "url": "https://github.com/tomprogrammer/rust-ascii"
+      },
+      {
+        "type": "WEB",
+        "url": "https://rustsec.org/advisories/RUSTSEC-2023-0015.html"
+      }
+    ],
+    "database_specific": {
+      "cwe_ids": [],
+      "severity": "MODERATE",
+      "github_reviewed": true,
+      "github_reviewed_at": "2023-02-28T20:30:10Z",
+      "nvd_published_at": null
+    }
+  },
+  {
+    "schema_version": "1.4.0",
+    "id": "GHSA-p2gm-ffr3-w2xw",
+    "modified": "2023-02-08T18:17:06Z",
+    "published": "2023-02-08T18:17:06Z",
+    "aliases": [],
+    "summary": "Nervos CKB vulnerable to low-resource flood DDoS attacks through network message",
+    "details": "### Workarounds\n* forbid request genesis through network request\n* forbid requesting duplicate data  through network request\n\n",
+    "severity": [],
+    "affected": [
+      {
+        "package": {
+          "ecosystem": "crates.io",
+          "name": "ckb"
+        },
+        "ranges": [
+          {
+            "type": "ECOSYSTEM",
+            "events": [
+              {
+                "introduced": "0"
+              },
+              {
+                "fixed": "0.101.4"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "references": [
+      {
+        "type": "WEB",
+        "url": "https://github.com/nervosnetwork/ckb/security/advisories/GHSA-p2gm-ffr3-w2xw"
+      },
+      {
+        "type": "PACKAGE",
+        "url": "https://github.com/nervosnetwork/ckb"
+      }
+    ],
+    "database_specific": {
+      "cwe_ids": [],
+      "severity": "LOW",
+      "github_reviewed": true,
+      "github_reviewed_at": "2023-02-08T18:17:06Z",
+      "nvd_published_at": null
+    }
+  },
+  {
+    "schema_version": "1.4.0",
+    "id": "GHSA-p52g-cm5j-mjv4",
+    "modified": "2023-02-24T19:03:43Z",
+    "published": "2023-02-08T22:31:42Z",
+    "aliases": [
+      "CVE-2022-4304"
+    ],
+    "summary": "openssl-src subject to Timing Oracle in RSA Decryption",
+    "details": "A timing based side channel exists in the OpenSSL RSA Decryption implementation which could be sufficient to recover a plaintext across a network in a Bleichenbacher style attack. To achieve a successful decryption an attacker would have to be able to send a very large number of trial messages for decryption. The vulnerability affects all RSA padding modes: PKCS#1 v1.5, RSA-OEAP and RSASVE.\n\nFor example, in a TLS connection, RSA is commonly used by a client to send an encrypted pre-master secret to the server. An attacker that had observed a genuine connection between a client and a server could use this flaw to send trial messages to the server and record the time taken to process them. After a sufficiently large number of messages the attacker could recover the pre-master secret used for the original connection and thus be able to decrypt the application data sent over that connection.\n",
+    "severity": [
+      {
+        "type": "CVSS_V3",
+        "score": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:H/I:N/A:N"
+      }
+    ],
+    "affected": [
+      {
+        "package": {
+          "ecosystem": "crates.io",
+          "name": "openssl-src"
+        },
+        "ranges": [
+          {
+            "type": "ECOSYSTEM",
+            "events": [
+              {
+                "introduced": "0"
+              },
+              {
+                "fixed": "111.25.0"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "package": {
+          "ecosystem": "crates.io",
+          "name": "openssl-src"
+        },
+        "ranges": [
+          {
+            "type": "ECOSYSTEM",
+            "events": [
+              {
+                "introduced": "300.0.0"
+              },
+              {
+                "fixed": "300.0.12"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "references": [
+      {
+        "type": "ADVISORY",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2022-4304"
+      },
+      {
+        "type": "WEB",
+        "url": "https://rustsec.org/advisories/RUSTSEC-2023-0007.html"
+      },
+      {
+        "type": "WEB",
+        "url": "https://www.openssl.org/news/secadv/20230207.txt"
+      }
+    ],
+    "database_specific": {
+      "cwe_ids": [],
+      "severity": "MODERATE",
+      "github_reviewed": true,
+      "github_reviewed_at": "2023-02-08T22:31:42Z",
+      "nvd_published_at": "2023-02-08T20:15:00Z"
+    }
+  },
+  {
+    "schema_version": "1.4.0",
+    "id": "GHSA-r7jw-wp68-3xch",
+    "modified": "2023-02-21T20:00:42Z",
+    "published": "2023-02-08T22:28:34Z",
+    "aliases": [
+      "CVE-2023-0215"
+    ],
+    "summary": "openssl-src vulnerable to Use-after-free following `BIO_new_NDEF`",
+    "details": "The public API function `BIO_new_NDEF` is a helper function used for streaming ASN.1 data via a `BIO`. It is primarily used internally to OpenSSL to support the SMIME, CMS and PKCS7 streaming capabilities, but may also be called directly by end user applications.\n\nThe function receives a `BIO` from the caller, prepends a new `BIO_f_asn1` filter `BIO` onto the front of it to form a `BIO` chain, and then returns the new head of the `BIO` chain to the caller. Under certain conditions, for example if a CMS recipient public key is invalid, the new filter `BIO` is freed and the function returns a `NULL` result indicating a failure. However, in this case, the `BIO` chain is not properly cleaned up and the `BIO` passed by the caller still retains internal pointers to the previously freed filter `BIO`. If the caller then goes on to call `BIO_pop()` on the `BIO` then a use-after-free will occur. This will most likely result in a crash.\n\nThis scenario occurs directly in the internal function `B64_write_ASN1()` which may cause `BIO_new_NDEF()` to be called and will subsequently call `BIO_pop()` on the `BIO`. This internal function is in turn called by the public API functions `PEM_write_bio_ASN1_stream`, `PEM_write_bio_CMS_stream`, `PEM_write_bio_PKCS7_stream`, `SMIME_write_ASN1`, `SMIME_write_CMS` and `SMIME_write_PKCS7`.\n\nOther public API functions that may be impacted by this include `i2d_ASN1_bio_stream`, `BIO_new_CMS`, `BIO_new_PKCS7`, `i2d_CMS_bio_stream` and `i2d_PKCS7_bio_stream`.\n",
+    "severity": [
+      {
+        "type": "CVSS_V3",
+        "score": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+      }
+    ],
+    "affected": [
+      {
+        "package": {
+          "ecosystem": "crates.io",
+          "name": "openssl-src"
+        },
+        "ranges": [
+          {
+            "type": "ECOSYSTEM",
+            "events": [
+              {
+                "introduced": "0"
+              },
+              {
+                "fixed": "111.25.0"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "package": {
+          "ecosystem": "crates.io",
+          "name": "openssl-src"
+        },
+        "ranges": [
+          {
+            "type": "ECOSYSTEM",
+            "events": [
+              {
+                "introduced": "300.0.0"
+              },
+              {
+                "fixed": "300.0.12"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "references": [
+      {
+        "type": "ADVISORY",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2023-0215"
+      },
+      {
+        "type": "WEB",
+        "url": "https://git.openssl.org/gitweb/?p=openssl.git;a=commitdiff;h=8818064ce3c3c0f1b740a5aaba2a987e75bfbafd"
+      },
+      {
+        "type": "WEB",
+        "url": "https://git.openssl.org/gitweb/?p=openssl.git;a=commitdiff;h=9816136fe31d92ace4037d5da5257f763aeeb4eb"
+      },
+      {
+        "type": "WEB",
+        "url": "https://git.openssl.org/gitweb/?p=openssl.git;a=commitdiff;h=c3829dd8825c654652201e16f8a0a0c46ee3f344"
+      },
+      {
+        "type": "WEB",
+        "url": "https://rustsec.org/advisories/RUSTSEC-2023-0009.html"
+      },
+      {
+        "type": "WEB",
+        "url": "https://security.netapp.com/advisory/ntap-20230427-0007/"
+      },
+      {
+        "type": "WEB",
+        "url": "https://security.netapp.com/advisory/ntap-20230427-0009/"
+      },
+      {
+        "type": "WEB",
+        "url": "https://www.openssl.org/news/secadv/20230207.txt"
+      }
+    ],
+    "database_specific": {
+      "cwe_ids": [
+        "CWE-416"
+      ],
+      "severity": "HIGH",
+      "github_reviewed": true,
+      "github_reviewed_at": "2023-02-08T22:28:34Z",
+      "nvd_published_at": "2023-02-08T20:15:00Z",
+      "vulnerable_methods": [
+        "BIO_new_NDEF"
+      ]
+    }
+  },
+  {
+    "schema_version": "1.4.0",
+    "id": "GHSA-v5w6-wcm8-jm4q",
+    "modified": "2023-02-21T19:59:57Z",
+    "published": "2023-02-08T22:22:58Z",
+    "aliases": [
+      "CVE-2022-4450"
+    ],
+    "summary": "openssl-src contains Double free after calling `PEM_read_bio_ex`",
+    "details": "The function `PEM_read_bio_ex()` reads a PEM file from a BIO and parses and decodes the \"name\" (e.g. \"CERTIFICATE\"), any header data and the payload data. If the function succeeds then the \"name_out\", \"header\" and \"data\" arguments are populated with pointers to buffers containing the relevant decoded data. The caller is responsible for freeing those buffers. It is possible to construct a PEM file that results in 0 bytes of payload data. In this case `PEM_read_bio_ex()` will return a failure code but will populate the header argument with a pointer to a buffer that has already been freed. If the caller also frees this buffer then a double free will occur. This will most likely lead to a crash. This could be exploited by an attacker who has the ability to supply malicious PEM files for parsing to achieve a denial of service attack.\n\nThe functions `PEM_read_bio()` and `PEM_read()` are simple wrappers around `PEM_read_bio_ex()` and therefore these functions are also directly affected.\n\nThese functions are also called indirectly by a number of other OpenSSL functions including `PEM_X509_INFO_read_bio_ex()` and\n`SSL_CTX_use_serverinfo_file()` which are also vulnerable. Some OpenSSL internal uses of these functions are not vulnerable because the caller does not free the header argument if `PEM_read_bio_ex()` returns a failure code. These locations include the `PEM_read_bio_TYPE()` functions as well as the decoders introduced in OpenSSL 3.0.\n",
+    "severity": [
+      {
+        "type": "CVSS_V3",
+        "score": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+      }
+    ],
+    "affected": [
+      {
+        "package": {
+          "ecosystem": "crates.io",
+          "name": "openssl-src"
+        },
+        "ranges": [
+          {
+            "type": "ECOSYSTEM",
+            "events": [
+              {
+                "introduced": "0"
+              },
+              {
+                "fixed": "111.25.0"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "package": {
+          "ecosystem": "crates.io",
+          "name": "openssl-src"
+        },
+        "ranges": [
+          {
+            "type": "ECOSYSTEM",
+            "events": [
+              {
+                "introduced": "300.0.0"
+              },
+              {
+                "fixed": "300.0.12"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "references": [
+      {
+        "type": "ADVISORY",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2022-4450"
+      },
+      {
+        "type": "WEB",
+        "url": "https://git.openssl.org/gitweb/?p=openssl.git;a=commitdiff;h=63bcf189be73a9cc1264059bed6f57974be74a83"
+      },
+      {
+        "type": "WEB",
+        "url": "https://git.openssl.org/gitweb/?p=openssl.git;a=commitdiff;h=bbcf509bd046b34cca19c766bbddc31683d0858b"
+      },
+      {
+        "type": "WEB",
+        "url": "https://rustsec.org/advisories/RUSTSEC-2023-0010.html"
+      },
+      {
+        "type": "WEB",
+        "url": "https://www.openssl.org/news/secadv/20230207.txt"
+      }
+    ],
+    "database_specific": {
+      "cwe_ids": [
+        "CWE-415"
+      ],
+      "severity": "HIGH",
+      "github_reviewed": true,
+      "github_reviewed_at": "2023-02-08T22:22:58Z",
+      "nvd_published_at": "2023-02-08T20:15:00Z",
+      "vulnerable_methods": [
+        "PEM_read_bio_ex"
+      ]
+    }
+  },
+  {
+    "schema_version": "1.4.0",
+    "id": "GHSA-vrh7-x64v-7vxq",
+    "modified": "2023-02-21T19:48:07Z",
+    "published": "2023-02-08T22:21:22Z",
+    "aliases": [
+      "CVE-2023-0401"
+    ],
+    "summary": "openssl-src contains `NULL` dereference during PKCS7 data verification",
+    "details": "A `NULL` pointer can be dereferenced when signatures are being verified on PKCS7 `signed` or `signedAndEnveloped` data. In case the hash algorithm used for the signature is known to the OpenSSL library but the implementation of the hash algorithm is not available the digest initialization will fail. There is a missing check for the return value from the initialization function which later leads to invalid usage of the digest API most likely leading to a crash. The unavailability of an algorithm can be caused by using FIPS enabled configuration of providers or more commonly by not loading the legacy provider.\n\nPKCS7 data is processed by the SMIME library calls and also by the time stamp (TS) library calls. The TLS implementation in OpenSSL does not call these functions however third party applications would be affected if they call these functions to verify signatures on untrusted data.",
+    "severity": [
+      {
+        "type": "CVSS_V3",
+        "score": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+      }
+    ],
+    "affected": [
+      {
+        "package": {
+          "ecosystem": "crates.io",
+          "name": "openssl-src"
+        },
+        "ranges": [
+          {
+            "type": "ECOSYSTEM",
+            "events": [
+              {
+                "introduced": "300.0.0"
+              },
+              {
+                "fixed": "300.0.12"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "references": [
+      {
+        "type": "ADVISORY",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2023-0401"
+      },
+      {
+        "type": "WEB",
+        "url": "https://git.openssl.org/gitweb/?p=openssl.git;a=commitdiff;h=d3b6dfd70db844c4499bec6ad6601623a565e674"
+      },
+      {
+        "type": "PACKAGE",
+        "url": "https://github.com/alexcrichton/openssl-src-rs"
+      },
+      {
+        "type": "WEB",
+        "url": "https://rustsec.org/advisories/RUSTSEC-2023-0013.html"
+      },
+      {
+        "type": "WEB",
+        "url": "https://www.openssl.org/news/secadv/20230207.txt"
+      }
+    ],
+    "database_specific": {
+      "cwe_ids": [
+        "CWE-476"
+      ],
+      "severity": "HIGH",
+      "github_reviewed": true,
+      "github_reviewed_at": "2023-02-08T22:21:22Z",
+      "nvd_published_at": "2023-02-08T20:15:00Z"
+    }
+  },
+  {
+    "schema_version": "1.4.0",
+    "id": "GHSA-vxrh-cpg7-8vjr",
+    "modified": "2023-02-21T19:59:13Z",
+    "published": "2023-02-08T22:22:12Z",
+    "aliases": [
+      "CVE-2023-0217"
+    ],
+    "summary": "openssl-src subject to NULL dereference validating DSA public key",
+    "details": "An invalid pointer dereference on read can be triggered when an application tries to check a malformed DSA public key by the `EVP_PKEY_public_check()` function. This will most likely lead to an application crash. This function can be called on public keys supplied from untrusted sources which could allow an attacker to cause a denial of service attack.\n\nThe TLS implementation in OpenSSL does not call this function but applications might call the function if there are additional security requirements imposed by standards such as FIPS 140-3.\n",
+    "severity": [
+      {
+        "type": "CVSS_V3",
+        "score": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+      }
+    ],
+    "affected": [
+      {
+        "package": {
+          "ecosystem": "crates.io",
+          "name": "openssl-src"
+        },
+        "ranges": [
+          {
+            "type": "ECOSYSTEM",
+            "events": [
+              {
+                "introduced": "300.0.0"
+              },
+              {
+                "fixed": "300.0.12"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "references": [
+      {
+        "type": "ADVISORY",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2023-0217"
+      },
+      {
+        "type": "WEB",
+        "url": "https://git.openssl.org/gitweb/?p=openssl.git;a=commitdiff;h=23985bac83fd50c8e29431009302b5442f985096"
+      },
+      {
+        "type": "WEB",
+        "url": "https://rustsec.org/advisories/RUSTSEC-2023-0012.html"
+      },
+      {
+        "type": "WEB",
+        "url": "https://www.openssl.org/news/secadv/20230207.txt"
+      }
+    ],
+    "database_specific": {
+      "cwe_ids": [
+        "CWE-476"
+      ],
+      "severity": "HIGH",
+      "github_reviewed": true,
+      "github_reviewed_at": "2023-02-08T22:22:12Z",
+      "nvd_published_at": "2023-02-08T20:15:00Z",
+      "vulnerable_methods": [
+        "EVP_PKEY_public_check"
+      ]
+    }
+  },
+  {
+    "schema_version": "1.4.0",
+    "id": "GHSA-w67w-mw4j-8qrv",
+    "modified": "2023-03-06T21:59:59Z",
+    "published": "2023-02-08T22:27:42Z",
+    "aliases": [
+      "CVE-2022-4203"
+    ],
+    "summary": "openssl-src contains Read Buffer Overflow in X.509 Name Constraint",
+    "details": "A read buffer overrun can be triggered in X.509 certificate verification, specifically in name constraint checking. Note that this occurs\nafter certificate chain signature verification and requires either a CA to have signed the malicious certificate or for the application to\ncontinue certificate verification despite failure to construct a path to a trusted issuer.\n\nThe read buffer overrun might result in a crash which could lead to a denial of service attack. In theory it could also result in the disclosure of private memory contents (such as private keys, or sensitive plaintext) although we are not aware of any working exploit leading to memory contents disclosure as of the time of release of this advisory.\n\nIn a TLS client, this can be triggered by connecting to a malicious server. In a TLS server, this can be triggered if the server requests client authentication and a malicious client connects.\n",
+    "severity": [
+      {
+        "type": "CVSS_V3",
+        "score": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:N/A:H"
+      }
+    ],
+    "affected": [
+      {
+        "package": {
+          "ecosystem": "crates.io",
+          "name": "openssl-src"
+        },
+        "ranges": [
+          {
+            "type": "ECOSYSTEM",
+            "events": [
+              {
+                "introduced": "300.0.0"
+              },
+              {
+                "fixed": "300.0.12"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "references": [
+      {
+        "type": "ADVISORY",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2022-4203"
+      },
+      {
+        "type": "WEB",
+        "url": "https://git.openssl.org/gitweb/?p=openssl.git;a=commitdiff;h=c927a3492698c254637da836762f9b1f86cffabc"
+      },
+      {
+        "type": "WEB",
+        "url": "https://rustsec.org/advisories/RUSTSEC-2023-0008.html"
+      },
+      {
+        "type": "WEB",
+        "url": "https://www.openssl.org/news/secadv/20230207.txt"
+      }
+    ],
+    "database_specific": {
+      "cwe_ids": [
+        "CWE-125"
+      ],
+      "severity": "CRITICAL",
+      "github_reviewed": true,
+      "github_reviewed_at": "2023-02-08T22:27:42Z",
+      "nvd_published_at": "2023-02-24T15:15:00Z"
+    }
+  },
+  {
+    "schema_version": "1.4.0",
+    "id": "GHSA-xr9w-x6gw-c9mj",
+    "modified": "2023-04-03T17:18:44Z",
+    "published": "2023-02-25T06:30:21Z",
+    "withdrawn": "2023-04-03T17:18:44Z",
+    "aliases": [],
+    "summary": "Duplicate advisory: Deno vulnerable to Regular Expression Denial of Service",
+    "details": "## Duplicate Advisory\nThis advisory has been withdrawn because it is a duplicate of [GHSA-jc97-h3h9-7xh6](https://github.com/advisories/GHSA-jc97-h3h9-7xh6). This link is maintained to preserve external references.\n\n## Original Description\nVersions of the package deno before 1.31.0 are vulnerable to Regular Expression Denial of Service (ReDoS) due to the upgradeWebSocket function, which contains regexes in the form of /s*,s*/, used for splitting the Connection/Upgrade header. A specially crafted Connection/Upgrade header can be used to significantly slow down a web socket server. This issue has been patched in version 1.31.0.",
+    "severity": [
+      {
+        "type": "CVSS_V3",
+        "score": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+      }
+    ],
+    "affected": [
+      {
+        "package": {
+          "ecosystem": "crates.io",
+          "name": "deno"
+        },
+        "ranges": [
+          {
+            "type": "ECOSYSTEM",
+            "events": [
+              {
+                "introduced": "0"
+              },
+              {
+                "fixed": "1.31.0"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "references": [
+      {
+        "type": "ADVISORY",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2023-26103"
+      },
+      {
+        "type": "WEB",
+        "url": "https://github.com/denoland/deno/pull/17722"
+      },
+      {
+        "type": "WEB",
+        "url": "https://github.com/denoland/deno/commit/cf06a7c7e672880e1b38598fe445e2c50b4a9d06"
+      },
+      {
+        "type": "PACKAGE",
+        "url": "https://github.com/denoland/deno"
+      },
+      {
+        "type": "WEB",
+        "url": "https://github.com/denoland/deno/blob/2b247be517d789a37e532849e2e40b724af0918f/ext/http/01_http.js%23L395-L409"
+      },
+      {
+        "type": "WEB",
+        "url": "https://github.com/denoland/deno/releases/tag/v1.31.0"
+      },
+      {
+        "type": "WEB",
+        "url": "https://security.snyk.io/vuln/SNYK-RUST-DENO-3315970"
+      }
+    ],
+    "database_specific": {
+      "cwe_ids": [
+        "CWE-1333"
+      ],
+      "severity": "HIGH",
+      "github_reviewed": true,
+      "github_reviewed_at": "2023-02-28T14:00:55Z",
+      "nvd_published_at": "2023-02-25T05:15:00Z",
+      "vulnerable_methods": [
+        "upgradeWebSocket"
+      ]
+    }
+  },
+  {
+    "schema_version": "1.4.0",
+    "id": "GHSA-xw5j-gv2g-mjm2",
+    "modified": "2023-02-14T21:53:37Z",
+    "published": "2023-02-14T21:53:37Z",
+    "aliases": [],
+    "summary": "Miscompilation in cortex-m-rt 0.7.1 and 0.7.2",
+    "details": "Version 0.7.1 of the `cortex-m-rt` crate introduced a regression causing the stack to NOT be eight-byte aligned prior to calling `main` (or any other specified entrypoint), violating the [stack ABI of AAPCS32], the default ABI used by all Cortex-M targets. This regression is also present in version 0.7.2 of the `cortex-m-rt` crate.\n\nThis regression can cause certain compiler optimizations (which assume the eight-byte alignment) to produce incorrect behavior at runtime. This incorrect behavior has been [observed in real-world applications].\n\n**It is advised that ALL users of `v0.7.1` and `v0.7.2` of the `cortex-m-rt` crate update to the latest version (`v0.7.3`), AS SOON AS POSSIBLE.** Users of `v0.7.0` and prior versions of `cortex-m-rt` are not affected by this regression.\n\nIt will be necessary to rebuild all affected firmware binaries, and flash or deploy the new firmware binaries to affected devices.\n\n[stack ABI of AAPCS32]: https://github.com/ARM-software/abi-aa/blob/edd7460d87493fff124b8b5713acf71ffc06ee91/aapcs32/aapcs32.rst#6212stack-constraints-at-a-public-interface\n[observed in real-world applications]: https://github.com/peter9477/test2\n",
+    "severity": [],
+    "affected": [
+      {
+        "package": {
+          "ecosystem": "crates.io",
+          "name": "cortex-m-rt"
+        },
+        "ranges": [
+          {
+            "type": "ECOSYSTEM",
+            "events": [
+              {
+                "introduced": "0.7.0"
+              },
+              {
+                "fixed": "0.7.3"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "references": [
+      {
+        "type": "PACKAGE",
+        "url": "https://github.com/rust-embedded/cortex-m"
+      },
+      {
+        "type": "WEB",
+        "url": "https://github.com/rust-embedded/cortex-m/discussions/469"
+      },
+      {
+        "type": "WEB",
+        "url": "https://rustsec.org/advisories/RUSTSEC-2023-0014.html"
+      }
+    ],
+    "database_specific": {
+      "cwe_ids": [],
+      "severity": "MODERATE",
+      "github_reviewed": true,
+      "github_reviewed_at": "2023-02-14T21:53:37Z",
+      "nvd_published_at": null
+    }
+  },
+  {
+    "schema_version": "1.4.0",
+    "id": "GHSA-255r-3prx-mf99",
+    "modified": "2023-03-22T22:21:49Z",
+    "published": "2023-03-22T22:21:49Z",
+    "aliases": [],
+    "summary": "`rmp-serde` `Raw` and `RawRef` may crash when receiving invalid UTF-8",
+    "details": "It was found that `Raw::from_utf8` expects valid UTF-8. If invalid UTF-8 is received it can cause the process to crash.\n",
+    "severity": [],
+    "affected": [
+      {
+        "package": {
+          "ecosystem": "crates.io",
+          "name": "rmp-serde"
+        },
+        "ranges": [
+          {
+            "type": "ECOSYSTEM",
+            "events": [
+              {
+                "introduced": "0"
+              },
+              {
+                "fixed": "1.1.1"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "references": [
+      {
+        "type": "WEB",
+        "url": "https://github.com/3Hren/msgpack-rust/issues/305"
+      },
+      {
+        "type": "PACKAGE",
+        "url": "https://github.com/3Hren/msgpack-rust"
+      },
+      {
+        "type": "WEB",
+        "url": "https://rustsec.org/advisories/RUSTSEC-2022-0092.html"
+      }
+    ],
+    "database_specific": {
+      "cwe_ids": [],
+      "severity": "MODERATE",
+      "github_reviewed": true,
+      "github_reviewed_at": "2023-03-22T22:21:49Z",
+      "nvd_published_at": null,
+      "vulnerable_methods": [
+        "from_utf8"
+      ]
+    }
+  },
+  {
+    "schema_version": "1.4.0",
+    "id": "GHSA-3gxf-9r58-2ghg",
+    "modified": "2023-03-24T22:01:35Z",
+    "published": "2023-03-24T22:01:35Z",
+    "aliases": [],
+    "summary": "`openssl` `X509NameBuilder::build` returned object is not thread safe",
+    "details": "OpenSSL has a `modified` bit that it can set on on `X509_NAME` objects. If this bit is set then the object is not thread-safe even when it appears the code is not modifying the value.\n\nThanks to David Benjamin (Google) for reporting this issue.\n",
+    "severity": [],
+    "affected": [
+      {
+        "package": {
+          "ecosystem": "crates.io",
+          "name": "openssl"
+        },
+        "ranges": [
+          {
+            "type": "ECOSYSTEM",
+            "events": [
+              {
+                "introduced": "0.9.7"
+              },
+              {
+                "fixed": "0.10.48"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "references": [
+      {
+        "type": "WEB",
+        "url": "https://github.com/sfackler/rust-openssl/pull/1854"
+      },
+      {
+        "type": "WEB",
+        "url": "https://rustsec.org/advisories/RUSTSEC-2023-0022.html"
+      }
+    ],
+    "database_specific": {
+      "cwe_ids": [],
+      "severity": "MODERATE",
+      "github_reviewed": true,
+      "github_reviewed_at": "2023-03-24T22:01:35Z",
+      "nvd_published_at": null
+    }
+  },
+  {
+    "schema_version": "1.4.0",
+    "id": "GHSA-5r3x-p7xx-x6q5",
+    "modified": "2023-03-28T23:08:47Z",
+    "published": "2023-03-28T14:45:28Z",
+    "aliases": [
+      "CVE-2023-28631"
+    ],
+    "summary": "Comrak AST node data is not validated (GHSL-2023-049)",
+    "details": "### Impact\nA Comrak AST can be constructed manually by a program instead of parsing a Markdown document with `parse_document`. This AST can then be converted to HTML via `html::format_document_with_plugins`. However, the HTML formatting code assumes that the AST is well-formed. For example, many AST notes contain `[u8]` fields which the formatting code assumes is valid UTF-8 data. Several bugs can be triggered if this is not the case.\n\n### Patches\n\n0.17.0 contains adjustments to the AST, storing strings instead of unvalidated byte arrays.\n\n### Workarounds\n\n* Validate UTF-8 correctness of all data when assigning to `&[u8]` and `Vec<u8>` fields in the AST.\n\n### References\nn/a",
+    "severity": [
+      {
+        "type": "CVSS_V3",
+        "score": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:L"
+      }
+    ],
+    "affected": [
+      {
+        "package": {
+          "ecosystem": "crates.io",
+          "name": "comrak"
+        },
+        "ranges": [
+          {
+            "type": "ECOSYSTEM",
+            "events": [
+              {
+                "introduced": "0"
+              },
+              {
+                "fixed": "0.17.0"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "references": [
+      {
+        "type": "WEB",
+        "url": "https://github.com/kivikakk/comrak/security/advisories/GHSA-5r3x-p7xx-x6q5"
+      },
+      {
+        "type": "ADVISORY",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2023-28631"
+      },
+      {
+        "type": "WEB",
+        "url": "https://github.com/kivikakk/comrak/commit/9ff5f8df0ac951f5742d22a72c39b89a15f56639"
+      },
+      {
+        "type": "PACKAGE",
+        "url": "https://github.com/kivikakk/comrak"
+      },
+      {
+        "type": "WEB",
+        "url": "https://github.com/kivikakk/comrak/releases/tag/0.17.0"
+      }
+    ],
+    "database_specific": {
+      "cwe_ids": [
+        "CWE-755"
+      ],
+      "severity": "MODERATE",
+      "github_reviewed": true,
+      "github_reviewed_at": "2023-03-28T14:45:28Z",
+      "nvd_published_at": "2023-03-28T21:15:00Z"
+    }
+  },
+  {
+    "schema_version": "1.4.0",
+    "id": "GHSA-6hcf-g6gr-hhcr",
+    "modified": "2023-03-24T22:01:23Z",
+    "published": "2023-03-24T22:01:23Z",
+    "aliases": [],
+    "summary": "`openssl` `X509Extension::new` and `X509Extension::new_nid` null pointer dereference",
+    "details": "These functions would crash when the context argument was None with certain extension types.\n\nThanks to David Benjamin (Google) for reporting this issue.\n",
+    "severity": [],
+    "affected": [
+      {
+        "package": {
+          "ecosystem": "crates.io",
+          "name": "openssl"
+        },
+        "ranges": [
+          {
+            "type": "ECOSYSTEM",
+            "events": [
+              {
+                "introduced": "0.9.7"
+              },
+              {
+                "fixed": "0.10.48"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "references": [
+      {
+        "type": "WEB",
+        "url": "https://github.com/sfackler/rust-openssl/pull/1854"
+      },
+      {
+        "type": "PACKAGE",
+        "url": "https://github.com/sfackler/rust-openssl"
+      },
+      {
+        "type": "WEB",
+        "url": "https://rustsec.org/advisories/RUSTSEC-2023-0024.html"
+      }
+    ],
+    "database_specific": {
+      "cwe_ids": [
+        "CWE-476"
+      ],
+      "severity": "HIGH",
+      "github_reviewed": true,
+      "github_reviewed_at": "2023-03-24T22:01:23Z",
+      "nvd_published_at": null,
+      "vulnerable_methods": [
+        "new_nid"
+      ]
+    }
+  },
+  {
+    "schema_version": "1.4.0",
+    "id": "GHSA-8hqf-xjwp-p67v",
+    "modified": "2023-03-28T23:08:31Z",
+    "published": "2023-03-28T14:40:29Z",
+    "aliases": [
+      "CVE-2023-28626"
+    ],
+    "summary": "Comrak vulnerable to quadratic runtime issues when parsing Markdown (GHSL-2023-047)",
+    "details": "### Impact\nA range of quadratic parsing issues from `cmark`/`cmark-gfm` are also present in Comrak. These can be used to craft denial-of-service attacks on services that use Comrak to parse Markdown.\n\n### Patches\n0.17.0 contains fixes to known quadratic parsing issues.\n\n### Workarounds\n\nn/a\n\n### References\n\n* https://github.com/commonmark/cmark/issues/255\n* https://github.com/commonmark/cmark/issues/389\n* https://github.com/commonmark/cmark/issues/373\n* https://github.com/commonmark/cmark/issues/299\n* https://github.com/commonmark/cmark/issues/388\n* https://github.com/commonmark/cmark/issues/284\n* https://github.com/commonmark/cmark/issues/218\n* https://github.com/commonmark/cmark/pull/232\n* https://github.com/github/cmark-gfm/blob/c32ef78bae851cb83b7ad52d0fbff880acdcd44a/test/pathological_tests.py#L63-L65\n* https://github.com/github/cmark-gfm/blob/c32ef78bae851cb83b7ad52d0fbff880acdcd44a/test/pathological_tests.py#L87-L89",
+    "severity": [
+      {
+        "type": "CVSS_V3",
+        "score": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:L"
+      }
+    ],
+    "affected": [
+      {
+        "package": {
+          "ecosystem": "crates.io",
+          "name": "comrak"
+        },
+        "ranges": [
+          {
+            "type": "ECOSYSTEM",
+            "events": [
+              {
+                "introduced": "0"
+              },
+              {
+                "fixed": "0.17.0"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "references": [
+      {
+        "type": "WEB",
+        "url": "https://github.com/kivikakk/comrak/security/advisories/GHSA-8hqf-xjwp-p67v"
+      },
+      {
+        "type": "ADVISORY",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2023-28626"
+      },
+      {
+        "type": "WEB",
+        "url": "https://github.com/commonmark/cmark/issues/218"
+      },
+      {
+        "type": "WEB",
+        "url": "https://github.com/commonmark/cmark/issues/255"
+      },
+      {
+        "type": "WEB",
+        "url": "https://github.com/commonmark/cmark/issues/284"
+      },
+      {
+        "type": "WEB",
+        "url": "https://github.com/commonmark/cmark/issues/299"
+      },
+      {
+        "type": "WEB",
+        "url": "https://github.com/commonmark/cmark/issues/373"
+      },
+      {
+        "type": "WEB",
+        "url": "https://github.com/commonmark/cmark/issues/388"
+      },
+      {
+        "type": "WEB",
+        "url": "https://github.com/commonmark/cmark/issues/389"
+      },
+      {
+        "type": "WEB",
+        "url": "https://github.com/commonmark/cmark/pull/232"
+      },
+      {
+        "type": "WEB",
+        "url": "https://github.com/kivikakk/comrak/commit/ce795b7f471b01589f842dc09af38b025701178d"
+      },
+      {
+        "type": "WEB",
+        "url": "https://github.com/github/cmark-gfm/blob/c32ef78bae851cb83b7ad52d0fbff880acdcd44a/test/pathological_tests.py#L63-L65"
+      },
+      {
+        "type": "WEB",
+        "url": "https://github.com/github/cmark-gfm/blob/c32ef78bae851cb83b7ad52d0fbff880acdcd44a/test/pathological_tests.py#L87-L89"
+      },
+      {
+        "type": "PACKAGE",
+        "url": "https://github.com/kivikakk/comrak"
+      },
+      {
+        "type": "WEB",
+        "url": "https://github.com/kivikakk/comrak/releases/tag/0.17.0"
+      }
+    ],
+    "database_specific": {
+      "cwe_ids": [
+        "CWE-400"
+      ],
+      "severity": "MODERATE",
+      "github_reviewed": true,
+      "github_reviewed_at": "2023-03-28T14:40:29Z",
+      "nvd_published_at": "2023-03-28T21:15:00Z"
+    }
+  },
+  {
+    "schema_version": "1.4.0",
+    "id": "GHSA-8vxc-r5wp-vgvc",
+    "modified": "2023-03-24T22:00:05Z",
+    "published": "2023-03-24T22:00:05Z",
+    "aliases": [
+      "CVE-2023-28448"
+    ],
+    "summary": "Versionize::deserialize implementation for FamStructWrapper<T> is lacking bound checks, potentially leading to out of bounds memory accesses",
+    "details": "### Impact\n\nAn issue was discovered in the `Versionize::deserialize` implementation provided by the `versionize` crate for `vmm_sys_util::fam::FamStructWrapper`, which can lead to out of bounds memory accesses.\n\n### Patches\n\nThe impact started with version 0.1.1. The issue was corrected in version 0.1.10 by inserting a check that verifies, for any deserialized header, the lengths of compared flexible arrays are equal and aborting deserialization otherwise.\n\n### Workarounds\n\\-\n\n### References\n- https://github.com/firecracker-microvm/versionize/pull/53",
+    "severity": [
+      {
+        "type": "CVSS_V3",
+        "score": "CVSS:3.1/AV:L/AC:L/PR:N/UI:N/S:C/C:N/I:L/A:L"
+      }
+    ],
+    "affected": [
+      {
+        "package": {
+          "ecosystem": "crates.io",
+          "name": "versionize"
+        },
+        "ranges": [
+          {
+            "type": "ECOSYSTEM",
+            "events": [
+              {
+                "introduced": "0.1.1"
+              },
+              {
+                "fixed": "0.1.10"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "references": [
+      {
+        "type": "WEB",
+        "url": "https://github.com/firecracker-microvm/versionize/security/advisories/GHSA-8vxc-r5wp-vgvc"
+      },
+      {
+        "type": "ADVISORY",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2023-28448"
+      },
+      {
+        "type": "WEB",
+        "url": "https://github.com/firecracker-microvm/versionize/pull/53"
+      },
+      {
+        "type": "WEB",
+        "url": "https://github.com/firecracker-microvm/versionize/commit/a57a051ba006cfa3b41a0532f484df759e008d47"
+      },
+      {
+        "type": "PACKAGE",
+        "url": "https://github.com/firecracker-microvm/versionize"
+      },
+      {
+        "type": "WEB",
+        "url": "https://github.com/firecracker-microvm/versionize/releases/tag/v0.1.10"
+      },
+      {
+        "type": "WEB",
+        "url": "https://rustsec.org/advisories/RUSTSEC-2023-0030.html"
+      }
+    ],
+    "database_specific": {
+      "cwe_ids": [
+        "CWE-125"
+      ],
+      "severity": "MODERATE",
+      "github_reviewed": true,
+      "github_reviewed_at": "2023-03-24T22:00:05Z",
+      "nvd_published_at": "2023-03-24T20:15:00Z",
+      "vulnerable_methods": [
+        "deserialize"
+      ]
+    }
+  },
+  {
+    "schema_version": "1.4.0",
+    "id": "GHSA-9qwg-crg9-m2vc",
+    "modified": "2023-03-24T22:01:29Z",
+    "published": "2023-03-24T22:01:29Z",
+    "aliases": [],
+    "summary": "`openssl` `SubjectAlternativeName` and `ExtendedKeyUsage::other` allow arbitrary file read",
+    "details": "`SubjectAlternativeName` and `ExtendedKeyUsage` arguments were parsed using the OpenSSL function `X509V3_EXT_nconf`. This function parses all input using an OpenSSL mini-language which can perform arbitrary file reads.\n\nThanks to David Benjamin (Google) for reporting this issue.\n",
+    "severity": [],
+    "affected": [
+      {
+        "package": {
+          "ecosystem": "crates.io",
+          "name": "openssl"
+        },
+        "ranges": [
+          {
+            "type": "ECOSYSTEM",
+            "events": [
+              {
+                "introduced": "0.9.7"
+              },
+              {
+                "fixed": "0.10.48"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "references": [
+      {
+        "type": "WEB",
+        "url": "https://github.com/sfackler/rust-openssl/pull/1854"
+      },
+      {
+        "type": "PACKAGE",
+        "url": "https://github.com/sfackler/rust-openssl"
+      },
+      {
+        "type": "WEB",
+        "url": "https://rustsec.org/advisories/RUSTSEC-2023-0023.html"
+      }
+    ],
+    "database_specific": {
+      "cwe_ids": [],
+      "severity": "HIGH",
+      "github_reviewed": true,
+      "github_reviewed_at": "2023-03-24T22:01:29Z",
+      "nvd_published_at": null,
+      "vulnerable_methods": [
+        "X509V3_EXT_nconf"
+      ]
+    }
+  },
+  {
+    "schema_version": "1.4.0",
+    "id": "GHSA-c25x-cm9x-qqgx",
+    "modified": "2023-03-24T13:32:16Z",
+    "published": "2023-03-23T23:13:25Z",
+    "aliases": [
+      "CVE-2023-28445"
+    ],
+    "summary": "Deno improperly handles resizable ArrayBuffer",
+    "details": "### Impact\n\n[Resizable ArrayBuffers](https://github.com/tc39/proposal-resizablearraybuffer) passed to asynchronous native functions that are shrunk during the asynchronous operation could result in an out-of-bound read/write.\n\nIt is unlikely that this has been exploited in the wild, as the only version affected is Deno 1.32.0.\n\nDeno Deploy users are not affected.\n\n### Patches\n\nThe problem has been resolved by disabling resizable ArrayBuffers temporarily in Deno 1.32.1. Deno 1.32.2 will re-enable resizable ArrayBuffers with a proper fix.\n\n### Workarounds\n\nUpgrade to Deno 1.32.1, or run with `--v8-flags=--no-harmony-rab-gsab` to disable resizable ArrayBuffers.",
+    "severity": [
+      {
+        "type": "CVSS_V3",
+        "score": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:C/C:H/I:H/A:H"
+      }
+    ],
+    "affected": [
+      {
+        "package": {
+          "ecosystem": "crates.io",
+          "name": "Deno"
+        },
+        "ranges": [
+          {
+            "type": "ECOSYSTEM",
+            "events": [
+              {
+                "introduced": "0"
+              },
+              {
+                "fixed": "1.32.1"
+              }
+            ]
+          }
+        ],
+        "database_specific": {
+          "last_known_affected_version_range": "<= 1.32.0"
+        }
+      },
+      {
+        "package": {
+          "ecosystem": "crates.io",
+          "name": "serde_v8"
+        },
+        "ranges": [
+          {
+            "type": "ECOSYSTEM",
+            "events": [
+              {
+                "introduced": "0"
+              },
+              {
+                "fixed": "0.88.0"
+              }
+            ]
+          }
+        ],
+        "database_specific": {
+          "last_known_affected_version_range": "<= 0.87.0"
+        }
+      },
+      {
+        "package": {
+          "ecosystem": "crates.io",
+          "name": "deno_runtime"
+        },
+        "ranges": [
+          {
+            "type": "ECOSYSTEM",
+            "events": [
+              {
+                "introduced": "0"
+              },
+              {
+                "fixed": "0.103.0"
+              }
+            ]
+          }
+        ],
+        "database_specific": {
+          "last_known_affected_version_range": "<= 0.102.0"
+        }
+      }
+    ],
+    "references": [
+      {
+        "type": "WEB",
+        "url": "https://github.com/denoland/deno/security/advisories/GHSA-c25x-cm9x-qqgx"
+      },
+      {
+        "type": "ADVISORY",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2023-28445"
+      },
+      {
+        "type": "WEB",
+        "url": "https://github.com/denoland/deno/pull/18395"
+      },
+      {
+        "type": "PACKAGE",
+        "url": "https://github.com/denoland/deno"
+      },
+      {
+        "type": "WEB",
+        "url": "https://github.com/denoland/deno/releases/tag/v1.32.1"
+      }
+    ],
+    "database_specific": {
+      "cwe_ids": [
+        "CWE-125",
+        "CWE-787"
+      ],
+      "severity": "CRITICAL",
+      "github_reviewed": true,
+      "github_reviewed_at": "2023-03-23T23:13:25Z",
+      "nvd_published_at": "2023-03-24T00:15:00Z",
+      "vulnerable_methods": [
+        "ArrayBuffers"
+      ]
+    }
+  },
+  {
+    "schema_version": "1.4.0",
+    "id": "GHSA-cqvm-j2r2-hwpg",
+    "modified": "2023-03-17T14:42:45Z",
+    "published": "2023-03-17T14:42:45Z",
+    "aliases": [
+      "CVE-2023-28113"
+    ],
+    "summary": "russh may use insecure Diffie-Hellman keys",
+    "details": "### Summary\n\nDiffie-Hellman key validation is insufficient, which can lead to insecure shared secrets and therefore breaks confidentiality.\n\n### Details\n\nRussh does not validate Diffie-Hellman keys.\n\nIt accepts received DH public keys $e$ where $e<0$, $e=1$, or $e \\geq p-1$ from a misbehaving peer annd successfully performs key exchange.\n\nThis is a violation of [RFC 4253, section 8](https://www.rfc-editor.org/rfc/rfc4253#section-8) and [RFC 8268, section 4](https://www.rfc-editor.org/rfc/rfc8268#section-4), which state that:\n\n>DH Public Key values MUST be checked and both conditions:\n>\n> - $1 < e < p-1$\n> - $1 < f < p-1$\n>\n> MUST be true.  Values not within these bounds MUST NOT be sent or\n> accepted by either side.  If either one of these conditions is\n> violated, then the key exchange fails.\n\nFor example, a DH client public key $e=1$ would mean that the shared secret that the server calculates is always $K = e^y \\mod{p} = 1^y \\mod{p} = 1$.\nIn other cases, an insecure order-2 subgroup may be used.\n\nAlso, the code does not look like it ensures that the generated secret key $y$ is in the valid interval $0 < y < q$ (or, if russh is the client, that the secret key $x$ satisfies $1 < x < q$):\nhttps://github.com/warp-tech/russh/blob/master/russh/src/kex/dh/groups.rs#L72-L76\nFor example, `rng.gen_biguint()` might return a number consisting of zeroes, so that $y = 0$.\n\nThe public key is not validated either:\nhttps://github.com/warp-tech/russh/blob/master/russh/src/kex/dh/groups.rs#L78-L81\n\n### Impact\n\nDue to the issues in the DH key generation, I think any connection that uses Diffie-Hellman key exchange is affected.\nConnections between a russh client and server or those of a russh peer with some other misbehaving peer are most likely to be problematic. These may vulnerable to eavesdropping.\n\nMost other implementations reject such keys, so this is mainly an interoperability issue in such a case.\n",
+    "severity": [
+      {
+        "type": "CVSS_V3",
+        "score": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:H/I:N/A:N"
+      }
+    ],
+    "affected": [
+      {
+        "package": {
+          "ecosystem": "crates.io",
+          "name": "russh"
+        },
+        "ranges": [
+          {
+            "type": "ECOSYSTEM",
+            "events": [
+              {
+                "introduced": "0"
+              },
+              {
+                "fixed": "0.36.2"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "package": {
+          "ecosystem": "crates.io",
+          "name": "russh"
+        },
+        "ranges": [
+          {
+            "type": "ECOSYSTEM",
+            "events": [
+              {
+                "introduced": "0.37.0"
+              },
+              {
+                "fixed": "0.37.1"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "references": [
+      {
+        "type": "WEB",
+        "url": "https://github.com/warp-tech/russh/security/advisories/GHSA-cqvm-j2r2-hwpg"
+      },
+      {
+        "type": "ADVISORY",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2023-28113"
+      },
+      {
+        "type": "WEB",
+        "url": "https://github.com/warp-tech/russh/commit/45d2d82930bf4a675bd57abfafec8fe4065befcd"
+      },
+      {
+        "type": "WEB",
+        "url": "https://github.com/warp-tech/russh/commit/d831a3716d3719dc76f091fcea9d94bd4ef97c6e"
+      },
+      {
+        "type": "PACKAGE",
+        "url": "https://github.com/warp-tech/russh"
+      },
+      {
+        "type": "WEB",
+        "url": "https://github.com/warp-tech/russh/blob/master/russh/src/kex/dh/groups.rs#L72-L76"
+      },
+      {
+        "type": "WEB",
+        "url": "https://github.com/warp-tech/russh/blob/master/russh/src/kex/dh/groups.rs#L78-L81"
+      },
+      {
+        "type": "WEB",
+        "url": "https://github.com/warp-tech/russh/releases/tag/v0.36.2"
+      },
+      {
+        "type": "WEB",
+        "url": "https://github.com/warp-tech/russh/releases/tag/v0.37.1"
+      }
+    ],
+    "database_specific": {
+      "cwe_ids": [
+        "CWE-20",
+        "CWE-347"
+      ],
+      "severity": "MODERATE",
+      "github_reviewed": true,
+      "github_reviewed_at": "2023-03-17T14:42:45Z",
+      "nvd_published_at": "2023-03-16T21:15:00Z"
+    }
+  },
+  {
+    "schema_version": "1.4.0",
+    "id": "GHSA-f5v5-ccqc-6w36",
+    "modified": "2023-03-24T21:59:53Z",
+    "published": "2023-03-24T21:59:53Z",
+    "aliases": [],
+    "summary": "async-nats vulnerable to TLS certificate common name validation bypass",
+    "details": "The NATS official Rust clients are vulnerable to MitM when using TLS.\n\nThe common name of the server's TLS certificate is validated against the `host`name provided by the server's plaintext `INFO` message during the initial connection setup phase. A MitM proxy can tamper with the `host` field's value by substituting it with the common name of a valid certificate it controls, fooling the client into accepting it.\n\n## Reproduction steps\n\n1. The NATS Rust client tries to establish a new connection\n2. The connection is intercepted by a MitM proxy\n3. The proxy makes a separate connection to the NATS server\n4. The NATS server replies with an `INFO` message\n5. The proxy reads the `INFO`, alters the `host` JSON field and passes the tampered `INFO` back to the client\n6. The proxy upgrades the client connection to TLS, presenting a certificate issued by a certificate authority present in the client's keychain. In the previous step the `host` was set to the common name of said certificate\n7. `rustls` accepts the certificate, having verified that the common name matches the attacker-controlled value it was given\n8. The client has been fooled by the MitM proxy into accepting the attacker-controlled certificate\n",
+    "severity": [],
+    "affected": [
+      {
+        "package": {
+          "ecosystem": "crates.io",
+          "name": "async-nats"
+        },
+        "ranges": [
+          {
+            "type": "ECOSYSTEM",
+            "events": [
+              {
+                "introduced": "0"
+              },
+              {
+                "fixed": "0.29.0"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "references": [
+      {
+        "type": "WEB",
+        "url": "https://github.com/nats-io/nats.rs/commit/817a7b942c462fa9d9938dcb62124173634132fb#diff-767d442397fcaaf2f83e8f924d4a70317a2ce4703a49964d6007707949cfa5f5L303-R304"
+      },
+      {
+        "type": "PACKAGE",
+        "url": "https://github.com/nats-io/nats.rs"
+      },
+      {
+        "type": "WEB",
+        "url": "https://rustsec.org/advisories/RUSTSEC-2023-0027.html"
+      }
+    ],
+    "database_specific": {
+      "cwe_ids": [],
+      "severity": "MODERATE",
+      "github_reviewed": true,
+      "github_reviewed_at": "2023-03-24T21:59:53Z",
+      "nvd_published_at": null
+    }
+  },
+  {
+    "schema_version": "1.4.0",
+    "id": "GHSA-fcmm-54jp-7vf6",
+    "modified": "2023-03-28T18:58:12Z",
+    "published": "2023-03-21T22:31:30Z",
+    "aliases": [
+      "CVE-2023-28431"
+    ],
+    "summary": "Frontier's modexp precompile is slow for even modulus",
+    "details": "### Impact\n\nFrontier's `modexp` precompile uses `num-bigint` crate under the hood. [In the implementation](https://github.com/rust-num/num-bigint/blob/6f2b8e0fc218dbd0f49bebb8db2d1a771fe6bafa/src/biguint/power.rs#L134), the cases for modulus being even and modulus being odd are treated separately. Odd modulus uses the fast Montgomery multiplication, and even modulus uses the slow plain power algorithm. This gas cost discrepancy was not accounted for in the `modexp` precompile, leading to possible denial of service attacks.\n\n### Patches\n\nNo fixes for `num-bigint` is currently available, and thus this advisory will be first fixed in the short term by raising the gas costs for even modulus, and in the long term fixing it in `num-bigint` or switching to another modexp implementation.\n\nThe short-term fix for Frontier is deployed at [PR 1017](https://github.com/paritytech/frontier/pull/1017).\n\nThe recommendations are as follows:\n\n- If you anticipate malicious validators, it's recommended to issue an emergency runtime upgrade as soon as possible.\n- If you do not anticipate malicious validators, it's recommended to issue a normal runtime upgrade, as Substrate has builtin timeout protection when validators are building blocks.\n\n### Workarounds\n\nNone.\n\n### References\n\nA similar issue was presented in Geth's implementation and the fix can be found [here](https://go-review.googlesource.com/c/go/+/420897).\n",
+    "severity": [
+      {
+        "type": "CVSS_V3",
+        "score": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+      }
+    ],
+    "affected": [
+      {
+        "package": {
+          "ecosystem": "crates.io",
+          "name": "frontier"
+        },
+        "ranges": [
+          {
+            "type": "ECOSYSTEM",
+            "events": [
+              {
+                "introduced": "0"
+              },
+              {
+                "last_affected": "0.1.0"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "references": [
+      {
+        "type": "WEB",
+        "url": "https://github.com/paritytech/frontier/security/advisories/GHSA-fcmm-54jp-7vf6"
+      },
+      {
+        "type": "ADVISORY",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2023-28431"
+      },
+      {
+        "type": "WEB",
+        "url": "https://github.com/paritytech/frontier/pull/1017"
+      },
+      {
+        "type": "WEB",
+        "url": "https://github.com/paritytech/frontier/commit/5af12e94d7dfc8a0208a290643a800f55de7b219"
+      },
+      {
+        "type": "PACKAGE",
+        "url": "https://github.com/paritytech/frontier"
+      },
+      {
+        "type": "WEB",
+        "url": "https://github.com/rust-num/num-bigint/blob/6f2b8e0fc218dbd0f49bebb8db2d1a771fe6bafa/src/biguint/power.rs#L134"
+      }
+    ],
+    "database_specific": {
+      "cwe_ids": [
+        "CWE-682"
+      ],
+      "severity": "HIGH",
+      "github_reviewed": true,
+      "github_reviewed_at": "2023-03-21T22:31:30Z",
+      "nvd_published_at": "2023-03-22T21:15:00Z",
+      "vulnerable_methods": [
+        "power"
+      ]
+    }
+  },
+  {
+    "schema_version": "1.4.0",
+    "id": "GHSA-ff4p-7xrq-q5r8",
+    "modified": "2023-03-09T00:10:53Z",
+    "published": "2023-03-09T00:10:53Z",
+    "aliases": [
+      "CVE-2023-26489"
+    ],
+    "summary": "wasmtime vulnerable to guest-controlled out-of-bounds read/write on x86_64",
+    "details": "### Impact\n\nWasmtime's code generator, Cranelift, has a bug on x86_64 targets where address-mode computation mistakenly would calculate a 35-bit effective address instead of WebAssembly's defined 33-bit effective address. This bug means that, with default codegen settings, a wasm-controlled load/store operation could read/write addresses up to 35 bits away from the base of linear memory. Wasmtime's default sandbox settings provide up to 6G of protection from the base of linear memory to guarantee that any memory access in that range will be semantically correct. Due to this bug, however, addresses up to `0xffffffff * 8 + 0x7ffffffc = 36507222004 = ~34G` bytes away from the base of linear memory are possible from guest code. This means that the virtual memory 6G away from the base of linear memory up to ~34G away can be read/written by a malicious module.\n\nThis out of bounds read/write is not semantically correct and poses a threat as an arbitrary read/write within ~34G of linear memory away from the base of a wasm module's linear memory. A guest module can, without the knowledge of the embedder, read/write memory in this region. The memory may belong to other WebAssembly instances when using the pooling allocator, for example. The memory may also belong to the embedder, depending on address layout.\n\nEmbedders do not have a necessarily reliable means of detecting when this happens. Wasm loads/stores are allowed to cause machine segfaults meaning that an invalid read/write would be translated to a nominal WebAssembly trap. This means that a malicious module in the worst case silently reads/writes memory outside its bounds and in the \"best\" case looks like a normal \"something trapped here\" during its execution. This makes it difficult to retroactively determine whether this bug has been exploited on hosts. Affected embedders are recommended to analyze preexisting wasm modules to see if they're affected by the incorrect codegen rules and possibly correlate that with an anomalous number of traps during historical execution to locate possibly suspicious modules.\n\nThe specific bug in Cranelift's x86_64 backend is that a WebAssembly address which is left-shifted by a constant amount from 1 to 3 will get folded into x86_64's addressing modes which perform shifts. For example `(i32.load (i32.shl (local.get 0) (i32.const 3)))` loads from the WebAssembly address `$local0 << 3`. When translated to Cranelift the `$local0 << 3` computation, a 32-bit value, is zero-extended to a 64-bit value and then added to the base address of linear memory. Cranelift would generate an instruction of the form `movl (%base, %local0, 8), %dst` which calculates `%base + %local0 << 3`. The bug here, however, is that the address computation happens with 64-bit values, where the `$local0 << 3` computation was supposed to be truncated to a 32-bit value. This means that `%local0`, which can use up to 32-bits for an address, gets 3 extra bits of address space to be accessible via this `movl` instruction.\n\nThe fix in Cranelift is to remove the erroneous lowering rules in the backend which handle these zero-extended expressions. The above example is then translated to `movl %local0, %temp; shl $3, %temp; movl (%base, %temp), %dst` which correctly truncates the intermediate computation of `%local0 << 3` to 32-bits inside the `%temp` register which is then added to the `%base` value.\n\n### Patches\n\nWasmtime version 4.0.1, 5.0.1, and 6.0.1 have been released and have all been patched to no longer contain the erroneous lowering rules.\n\n### Workarounds\n\nWhile updating Wasmtime is recommended, there are a number of possible workarounds that embedders can employ to mitigate this issue if updating is not possible. Note that none of these workarounds are on-by-default and require explicit configuration:\n\n* The `Config::static_memory_maximum_size(0)` option can be used to force all accesses to linear memory to be explicitly bounds-checked. This will perform a bounds check separately from the address-mode computation which correctly calculates the effective address of a load/store. Note that this can have a large impact on the execution performance of WebAssembly modules.\n* The `Config::static_memory_guard_size(1 << 36)` option can be used to greatly increase the guard pages placed after linear memory. This will guarantee that memory accesses up-to-34G away are guaranteed to be semantically correct by reserving unmapped memory for the instance. Note that this reserves a very large amount of virtual memory per-instances and can greatly reduce the maximum number of concurrent instances being run.\n* If using a non-x86_64 host is possible, then that will also work around this bug. This bug does not affect Wasmtime's or Cranelift's AArch64 backend, for example.\n\n### References\n\n* [`Config::static_memory_maximum_size`](https://docs.rs/wasmtime/latest/wasmtime/struct.Config.html#method.static_memory_maximum_size)\n* [`Config::static_memory_guard_size`](https://docs.rs/wasmtime/latest/wasmtime/struct.Config.html#method.static_memory_guard_size)\n* [Mailing list announcement](https://groups.google.com/a/bytecodealliance.org/g/sec-announce/c/Mov-ItrNJsQ)\n* [GitHub advisory](https://github.com/bytecodealliance/wasmtime/security/advisories/GHSA-ff4p-7xrq-q5r8)\n* [Commit to fix this issue on Wasmtime's `main` branch](https://github.com/bytecodealliance/wasmtime/commit/63fb30e4b4415455d47b3da5a19d79c12f4f2d1f)\n\n### For more information\n\nIf you have any questions or comments about this advisory:\n\n* Reach out to us on [the Bytecode Alliance Zulip chat](https://bytecodealliance.zulipchat.com/#narrow/stream/217126-wasmtime)\n* Open an issue in [the bytecodealliance/wasmtime repository](https://github.com/bytecodealliance/wasmtime/)\n",
+    "severity": [
+      {
+        "type": "CVSS_V3",
+        "score": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:C/C:H/I:H/A:H"
+      }
+    ],
+    "affected": [
+      {
+        "package": {
+          "ecosystem": "crates.io",
+          "name": "wasmtime"
+        },
+        "ranges": [
+          {
+            "type": "ECOSYSTEM",
+            "events": [
+              {
+                "introduced": "0.37.0"
+              },
+              {
+                "fixed": "4.0.1"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "package": {
+          "ecosystem": "crates.io",
+          "name": "wasmtime"
+        },
+        "ranges": [
+          {
+            "type": "ECOSYSTEM",
+            "events": [
+              {
+                "introduced": "5.0.0"
+              },
+              {
+                "fixed": "5.0.1"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "package": {
+          "ecosystem": "crates.io",
+          "name": "wasmtime"
+        },
+        "ranges": [
+          {
+            "type": "ECOSYSTEM",
+            "events": [
+              {
+                "introduced": "6.0.0"
+              },
+              {
+                "fixed": "6.0.1"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "package": {
+          "ecosystem": "crates.io",
+          "name": "cranelift-codegen"
+        },
+        "ranges": [
+          {
+            "type": "ECOSYSTEM",
+            "events": [
+              {
+                "introduced": "0.84.0"
+              },
+              {
+                "fixed": "0.91.1"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "package": {
+          "ecosystem": "crates.io",
+          "name": "cranelift-codegen"
+        },
+        "ranges": [
+          {
+            "type": "ECOSYSTEM",
+            "events": [
+              {
+                "introduced": "0.92.0"
+              },
+              {
+                "fixed": "0.92.1"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "package": {
+          "ecosystem": "crates.io",
+          "name": "cranelift-codegen"
+        },
+        "ranges": [
+          {
+            "type": "ECOSYSTEM",
+            "events": [
+              {
+                "introduced": "0.93.0"
+              },
+              {
+                "fixed": "0.93.1"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "references": [
+      {
+        "type": "WEB",
+        "url": "https://github.com/bytecodealliance/wasmtime/security/advisories/GHSA-ff4p-7xrq-q5r8"
+      },
+      {
+        "type": "ADVISORY",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2023-26489"
+      },
+      {
+        "type": "WEB",
+        "url": "https://github.com/bytecodealliance/wasmtime/commit/63fb30e4b4415455d47b3da5a19d79c12f4f2d1f"
+      },
+      {
+        "type": "WEB",
+        "url": "https://docs.rs/wasmtime/latest/wasmtime/struct.Config.html#method.static_memory_guard_size"
+      },
+      {
+        "type": "WEB",
+        "url": "https://docs.rs/wasmtime/latest/wasmtime/struct.Config.html#method.static_memory_maximum_size"
+      },
+      {
+        "type": "PACKAGE",
+        "url": "https://github.com/bytecodealliance/wasmtime"
+      },
+      {
+        "type": "WEB",
+        "url": "https://groups.google.com/a/bytecodealliance.org/g/sec-announce/c/Mov-ItrNJsQ"
+      }
+    ],
+    "database_specific": {
+      "cwe_ids": [
+        "CWE-125",
+        "CWE-787"
+      ],
+      "severity": "CRITICAL",
+      "github_reviewed": true,
+      "github_reviewed_at": "2023-03-09T00:10:53Z",
+      "nvd_published_at": "2023-03-08T20:15:00Z",
+      "vulnerable_methods": [
+        "movl"
+      ]
+    }
+  },
+  {
+    "schema_version": "1.4.0",
+    "id": "GHSA-p7mj-xvxg-grff",
+    "modified": "2023-03-13T20:49:24Z",
+    "published": "2023-03-13T20:49:24Z",
+    "aliases": [],
+    "summary": "`out_reference::Out::from_raw` should be `unsafe`",
+    "details": "`Out::from_raw` in affected versions allows writing a value to invalid memory address without requiring `unsafe`.\n\nThe soundness issue has been addressed by making `Out::from_raw` an unsafe function.\n",
+    "severity": [],
+    "affected": [
+      {
+        "package": {
+          "ecosystem": "crates.io",
+          "name": "out-reference"
+        },
+        "ranges": [
+          {
+            "type": "ECOSYSTEM",
+            "events": [
+              {
+                "introduced": "0.1.0"
+              },
+              {
+                "fixed": "0.2.0"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "references": [
+      {
+        "type": "WEB",
+        "url": "https://github.com/RustyYato/out-ref/issues/1"
+      },
+      {
+        "type": "WEB",
+        "url": "https://rustsec.org/advisories/RUSTSEC-2021-0152.html"
+      }
+    ],
+    "database_specific": {
+      "cwe_ids": [],
+      "severity": "MODERATE",
+      "github_reviewed": true,
+      "github_reviewed_at": "2023-03-13T20:49:24Z",
+      "nvd_published_at": null,
+      "vulnerable_methods": [
+        "Out::from_raw"
+      ]
+    }
+  },
+  {
+    "schema_version": "1.4.0",
+    "id": "GHSA-ppjr-267j-5p9x",
+    "modified": "2023-03-20T21:11:58Z",
+    "published": "2023-03-20T21:11:58Z",
+    "aliases": [],
+    "summary": "NULL pointer derefernce in `stb_image`",
+    "details": "A bug in error handling in the `stb_image` C library could cause a NULL pointer dereference when attempting to load an invalid or unsupported image file.  This is fixed in version 0.2.5 and later of the `stb_image` Rust crate, by patching the C code to correctly handle NULL pointers.\n\nThank you to GitHub user 0xdd96 for finding and fixing this vulnerability.\n",
+    "severity": [],
+    "affected": [
+      {
+        "package": {
+          "ecosystem": "crates.io",
+          "name": "stb_image"
+        },
+        "ranges": [
+          {
+            "type": "ECOSYSTEM",
+            "events": [
+              {
+                "introduced": "0"
+              },
+              {
+                "fixed": "0.2.5"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "references": [
+      {
+        "type": "WEB",
+        "url": "https://github.com/servo/rust-stb-image/pull/102"
+      },
+      {
+        "type": "PACKAGE",
+        "url": "https://github.com/servo/rust-stb-imag"
+      },
+      {
+        "type": "WEB",
+        "url": "https://rustsec.org/advisories/RUSTSEC-2023-0021.html"
+      }
+    ],
+    "database_specific": {
+      "cwe_ids": [
+        "CWE-476"
+      ],
+      "severity": "MODERATE",
+      "github_reviewed": true,
+      "github_reviewed_at": "2023-03-20T21:11:58Z",
+      "nvd_published_at": null
+    }
+  },
+  {
+    "schema_version": "1.4.0",
+    "id": "GHSA-vq67-rp93-65qf",
+    "modified": "2023-03-24T22:06:01Z",
+    "published": "2023-03-24T22:06:01Z",
+    "aliases": [
+      "CVE-2023-28446"
+    ],
+    "summary": "Interactive `run` permission prompt spoofing via improper ANSI neutralization",
+    "details": "### Summary\nArbitrary program names without any ANSI filtering allows any malicious program to clear the first 2 lines of a `op_spawn_child` or `op_kill` prompt and replace it with any desired text.\n\n### Details\n\nThe main entry point comes down to the ability to override what the API control says ([40_process.js](https://github.com/denoland/deno/blob/7d13d65468c37022f003bb680dfbddd07ea72173/runtime/js/40_process.js#L175)). Because of ANSI code's ability to clear lines, a malicious program can clear the last 2 lines of the prompt and put their own header. This also works in `op_kill`.\n\n### PoC\n\nThis PoC works on 1.31.1, but modified versions of it work on older versions.\n\nMake a file, e.g. `index.ts`, that uses this vulnerability to spoof the `op_spawn_child` permission prompt\n\n```ts\nconst boldANSI = \"\\u001b[1m\" // bold\nconst unboldANSI = \"\\u001b[22m\" // unbold\n\nconst prompt = `┌ ⚠️  ${boldANSI}Deno requests run access to \"echo\"${unboldANSI}\n├ Requested by \\`Deno.Command().output()`\n\nconst moveANSIUp = \"\\u001b[1A\" // moves to the start of the line\nconst clearANSI = \"\\u001b[2K\" // clears the line\nconst moveANSIStart = \"\\u001b[1000D\" // moves to the start of the line\n\nDeno[Object.getOwnPropertySymbols(Deno)[0]].core.ops.op_spawn_child({\n    cmd: \"cat\",\n    args: [\"/etc/passwd\"],\n    clearEnv: false,\n    env: [],\n    stdin: \"null\",\n    stdout: \"inherit\",\n    stderr: \"piped\"\n}, moveANSIUp + clearANSI + moveANSIStart + prompt)\n```\n\nRun the file with `deno run index.ts`.\n\n### Impact\nAny Deno program is able to spoof the interactive permission prompt for the `op_spawn_child` or the `op_kill` action (which indirectly gives access to all run commands) by overriding the `Requested by {message} API` with their own ANSI codes, allowing them to clear the latter prompt and change it to whatever they needed:\n\n```\n// Expected Prompt\n┌ ⚠️  Deno requests run access to \"cat\"\n├ Requested by `Deno.Command().output()` API\n├ Run again with --allow-run to bypass this prompt.\n└ Allow? [y/n/A] (y = yes, allow; n = no, deny; A = allow all run permissions) >\n\n// Actual Prompt\n┌ ⚠️  Deno requests run access to \"echo\"\n├ Requested by `Deno.Command().output()` API\n├ Run again with --allow-run to bypass this prompt.\n└ Allow? [y/n/A] (y = yes, allow; n = no, deny; A = allow all run permissions) >\n```\n\nThis works with any command on the respective platform, giving the program the full ability to choose what program they wanted to run.\n\nThis problem can not be exploited on systems that do not attach an interactive prompt (for example headless servers).\n\nBefore `v1.31.0`, this requires the `--unstable` flag. \n",
+    "severity": [
+      {
+        "type": "CVSS_V3",
+        "score": "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:H/I:H/A:H"
+      }
+    ],
+    "affected": [
+      {
+        "package": {
+          "ecosystem": "crates.io",
+          "name": "deno_runtime"
+        },
+        "ranges": [
+          {
+            "type": "ECOSYSTEM",
+            "events": [
+              {
+                "introduced": "1.8.0"
+              },
+              {
+                "fixed": "1.31.2"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "package": {
+          "ecosystem": "crates.io",
+          "name": "deno"
+        },
+        "ranges": [
+          {
+            "type": "ECOSYSTEM",
+            "events": [
+              {
+                "introduced": "1.8.0"
+              },
+              {
+                "fixed": "1.31.2"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "references": [
+      {
+        "type": "WEB",
+        "url": "https://github.com/denoland/deno/security/advisories/GHSA-vq67-rp93-65qf"
+      },
+      {
+        "type": "ADVISORY",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2023-28446"
+      },
+      {
+        "type": "PACKAGE",
+        "url": "https://github.com/denoland/deno"
+      },
+      {
+        "type": "WEB",
+        "url": "https://github.com/denoland/deno/blob/7d13d65468c37022f003bb680dfbddd07ea72173/runtime/js/40_process.js#L175"
+      },
+      {
+        "type": "WEB",
+        "url": "https://github.com/denoland/deno/releases/tag/v1.31.2"
+      }
+    ],
+    "database_specific": {
+      "cwe_ids": [
+        "CWE-150"
+      ],
+      "severity": "HIGH",
+      "github_reviewed": true,
+      "github_reviewed_at": "2023-03-24T22:06:01Z",
+      "nvd_published_at": "2023-03-24T20:15:00Z"
+    }
+  },
+  {
+    "schema_version": "1.4.0",
+    "id": "GHSA-wm8x-php5-hvq6",
+    "modified": "2023-03-07T20:13:19Z",
+    "published": "2023-03-07T20:13:19Z",
+    "aliases": [],
+    "summary": "Maligned causes incorrect deallocation",
+    "details": "`maligned::align_first` manually allocates with an alignment larger than T, and then uses `Vec::from_raw_parts` on that allocation to get a `Vec<T>`.\n\n[`GlobalAlloc::dealloc`](https://doc.rust-lang.org/std/alloc/trait.GlobalAlloc.html#tymethod.dealloc) requires that the `layout` argument must be the same layout that was used to allocate that block of memory.\n\nWhen deallocating, `Box` and `Vec` may not respect the specified alignment and can cause undefined behavior.\n",
+    "severity": [],
+    "affected": [
+      {
+        "package": {
+          "ecosystem": "crates.io",
+          "name": "maligned"
+        },
+        "ranges": [
+          {
+            "type": "ECOSYSTEM",
+            "events": [
+              {
+                "introduced": "0"
+              },
+              {
+                "last_affected": "0.2.1"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "references": [
+      {
+        "type": "WEB",
+        "url": "https://github.com/tylerhawkes/maligned/issues/5"
+      },
+      {
+        "type": "WEB",
+        "url": "https://doc.rust-lang.org/std/alloc/trait.GlobalAlloc.html#tymethod.dealloc"
+      },
+      {
+        "type": "PACKAGE",
+        "url": "https://github.com/tylerhawkes/maligned"
+      },
+      {
+        "type": "WEB",
+        "url": "https://rustsec.org/advisories/RUSTSEC-2023-0017.html"
+      }
+    ],
+    "database_specific": {
+      "cwe_ids": [],
+      "severity": "MODERATE",
+      "github_reviewed": true,
+      "github_reviewed_at": "2023-03-07T20:13:19Z",
+      "nvd_published_at": null
+    }
+  },
+  {
+    "schema_version": "1.4.0",
+    "id": "GHSA-wvc4-j7g5-4f79",
+    "modified": "2023-03-27T21:12:24Z",
+    "published": "2023-03-27T21:12:24Z",
+    "aliases": [],
+    "summary": "NATS TLS certificate common name validation bypass",
+    "details": "The NATS official Rust clients are vulnerable to MitM when using TLS.\n\nA fix for the `nats` crate hasn't been released yet. Since the `nats` crate is going to be deprecated anyway, consider switching to `async-nats` `>= 0.29` which already fixed this vulnerability.\n\nThe common name of the server's TLS certificate is validated against the `host`name provided by the server's plaintext `INFO` message during the initial connection setup phase. A MitM proxy can tamper with the `host` field's value by substituting it with the common name of a valid certificate it controls, fooling the client into accepting it.\n\n## Reproduction steps\n\n1. The NATS Rust client tries to establish a new connection\n2. The connection is intercepted by a MitM proxy\n3. The proxy makes a separate connection to the NATS server\n4. The NATS server replies with an `INFO` message\n5. The proxy reads the `INFO`, alters the `host` JSON field and passes the tampered `INFO` back to the client\n6. The proxy upgrades the client connection to TLS, presenting a certificate issued by a certificate authority present in the client's keychain. In the previous step the `host` was set to the common name of said certificate\n7. `rustls` accepts the certificate, having verified that the common name matches the attacker-controlled value it was given\n9. The client has been fooled by the MitM proxy into accepting the attacker-controlled certificate\n",
+    "severity": [],
+    "affected": [
+      {
+        "package": {
+          "ecosystem": "crates.io",
+          "name": "nats"
+        },
+        "ranges": [
+          {
+            "type": "ECOSYSTEM",
+            "events": [
+              {
+                "introduced": "0.9.0"
+              },
+              {
+                "last_affected": "0.24.0"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "references": [
+      {
+        "type": "WEB",
+        "url": "https://github.com/nats-io/nats.rs/pull/881"
+      },
+      {
+        "type": "WEB",
+        "url": "https://github.com/nats-io/nats.rs/pull/887"
+      },
+      {
+        "type": "PACKAGE",
+        "url": "https://github.com/nats-io/nats.rs"
+      },
+      {
+        "type": "WEB",
+        "url": "https://rustsec.org/advisories/RUSTSEC-2023-0029.html"
+      }
+    ],
+    "database_specific": {
+      "cwe_ids": [
+        "CWE-347"
+      ],
+      "severity": "MODERATE",
+      "github_reviewed": true,
+      "github_reviewed_at": "2023-03-27T21:12:24Z",
+      "nvd_published_at": null,
+      "vulnerable_methods": [
+        "host"
+      ]
+    }
+  },
+  {
+    "schema_version": "1.4.0",
+    "id": "GHSA-xm67-587q-r2vw",
+    "modified": "2023-03-09T00:09:03Z",
+    "published": "2023-03-09T00:09:03Z",
+    "aliases": [
+      "CVE-2023-27477"
+    ],
+    "summary": "wasmtime vulnerable to miscompilation of `i8x16.select` with the same inputs on x86_64",
+    "details": "### Impact\n\nWasmtime's code generation backend, Cranelift, has a bug on x86_64 platforms for the WebAssembly `i8x16.select` instruction which will produce the wrong results when the same operand is provided to the instruction and some of the selected indices are greater than 16. There is an off-by-one error  in the calculation of the mask to the `pshufb` instruction which causes incorrect results to be returned if lanes are selected from the second vector.\n\nThe impact of this miscompilation is that the WebAssembly instruction can produce incorrect results for the `i8x16.select` instruction. This should have no effect on embedders and does not represent a sandbox escape, for example. Guest programs, however, may behave unexpectedly due to the incorrect result of this instruction. In extreme cases if a guest program is handling untrusted input then the guest program may deviate from its intended execution, for example calling an imported host function with different arguments than intended. This still does not impact embedders, however, because there is no form of privilege escalation with the guest.\n\nAt this time it's expected that this codegen pattern doesn't show up in the wild that often. LLVM-generated modules, for example, do not appear to conventionally or idiomatically generate code which would hit this bug. It is possible, however, to still write code which triggers this, so it's recommended for embedders to analyze existing modules to see if any are affected.\n\n### Patches\n\nThis codegen bug has been fixed in Wasmtime 6.0.1, 5.0.1, and 4.0.1. Users are recommended to upgrade to these updated versions.\n\n### Workarounds\n\nIf upgrading is not an option for you at this time, you can avoid this miscompilation by [disabling the Wasm simd proposal](https://docs.rs/wasmtime/latest/wasmtime/struct.Config.html#method.wasm_simd)\n\n```rust\nconfig.wasm_simd(false);\n```\n\nAdditionally the bug is only present on x86_64 hosts. Other platforms such as AArch64 and s390x are not affected.\n\n### References\n\n* [The WebAssembly simd proposal](https://github.com/webassembly/simd)\n* [Mailing list announcement](https://groups.google.com/a/bytecodealliance.org/g/sec-announce/c/Mov-ItrNJsQ)\n* [GitHub advisory](https://github.com/bytecodealliance/wasmtime/security/advisories/GHSA-xm67-587q-r2vw)\n* [Commit to fix this issue on Wasmtime's `main` branch](https://github.com/bytecodealliance/wasmtime/commit/5dc2bbccbb363e474d2c9a1b8e38a89a43bbd5d1)\n\n### For more information\n\nIf you have any questions or comments about this advisory:\n\n* Reach out to us on [the Bytecode Alliance Zulip chat](https://bytecodealliance.zulipchat.com/#narrow/stream/217126-wasmtime)\n* Open an issue in [the bytecodealliance/wasmtime repository](https://github.com/bytecodealliance/wasmtime/)",
+    "severity": [
+      {
+        "type": "CVSS_V3",
+        "score": "CVSS:3.1/AV:N/AC:H/PR:L/UI:N/S:U/C:N/I:L/A:N"
+      }
+    ],
+    "affected": [
+      {
+        "package": {
+          "ecosystem": "crates.io",
+          "name": "wasmtime"
+        },
+        "ranges": [
+          {
+            "type": "ECOSYSTEM",
+            "events": [
+              {
+                "introduced": "1.0.0"
+              },
+              {
+                "fixed": "4.0.1"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "package": {
+          "ecosystem": "crates.io",
+          "name": "wasmtime"
+        },
+        "ranges": [
+          {
+            "type": "ECOSYSTEM",
+            "events": [
+              {
+                "introduced": "5.0.0"
+              },
+              {
+                "fixed": "5.0.1"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "package": {
+          "ecosystem": "crates.io",
+          "name": "wasmtime"
+        },
+        "ranges": [
+          {
+            "type": "ECOSYSTEM",
+            "events": [
+              {
+                "introduced": "6.0.0"
+              },
+              {
+                "fixed": "6.0.1"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "package": {
+          "ecosystem": "crates.io",
+          "name": "cranelift-codegen"
+        },
+        "ranges": [
+          {
+            "type": "ECOSYSTEM",
+            "events": [
+              {
+                "introduced": "0.88.0"
+              },
+              {
+                "fixed": "0.91.1"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "package": {
+          "ecosystem": "crates.io",
+          "name": "cranelift-codegen"
+        },
+        "ranges": [
+          {
+            "type": "ECOSYSTEM",
+            "events": [
+              {
+                "introduced": "0.92.0"
+              },
+              {
+                "fixed": "0.92.1"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "package": {
+          "ecosystem": "crates.io",
+          "name": "cranelift-codegen"
+        },
+        "ranges": [
+          {
+            "type": "ECOSYSTEM",
+            "events": [
+              {
+                "introduced": "0.93.0"
+              },
+              {
+                "fixed": "0.93.1"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "references": [
+      {
+        "type": "WEB",
+        "url": "https://github.com/bytecodealliance/wasmtime/security/advisories/GHSA-xm67-587q-r2vw"
+      },
+      {
+        "type": "ADVISORY",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2023-27477"
+      },
+      {
+        "type": "WEB",
+        "url": "https://github.com/bytecodealliance/wasmtime/commit/5dc2bbccbb363e474d2c9a1b8e38a89a43bbd5d1"
+      },
+      {
+        "type": "WEB",
+        "url": "https://docs.rs/wasmtime/latest/wasmtime/struct.Config.html#method.wasm_simd"
+      },
+      {
+        "type": "PACKAGE",
+        "url": "https://github.com/bytecodealliance/wasmtime"
+      },
+      {
+        "type": "WEB",
+        "url": "https://github.com/webassembly/simd"
+      },
+      {
+        "type": "WEB",
+        "url": "https://groups.google.com/a/bytecodealliance.org/g/sec-announce/c/Mov-ItrNJsQ"
+      }
+    ],
+    "database_specific": {
+      "cwe_ids": [
+        "CWE-193"
+      ],
+      "severity": "LOW",
+      "github_reviewed": true,
+      "github_reviewed_at": "2023-03-09T00:09:03Z",
+      "nvd_published_at": "2023-03-08T21:15:00Z"
+    }
+  },
+  {
+    "schema_version": "1.4.0",
+    "id": "GHSA-xxmq-4vph-956w",
+    "modified": "2023-03-28T14:44:04Z",
+    "published": "2023-03-28T14:44:04Z",
+    "aliases": [],
+    "summary": "Comrak vulnerable to production of excessive output when parsing Markdown (GHSL-2023-048)",
+    "details": "### Impact\n\ncomrak is vulnerable to the upstream cmark issue, [\"Issue revealed by fuzzer\"](https://github.com/commonmark/cmark/issues/354). A large number of references in a markdown document can trigger an overly large response.\n\n### Patches\n\n0.17.0 contains https://github.com/kivikakk/comrak/commit/70f97f3ea4eae30ffbd1b94c764a3de2f1c41d2a, which limits reference output to a 100Kb maximum.\n\n### Workarounds\n\nn/a\n\n### References\n\n* https://github.com/commonmark/cmark/issues/354",
+    "severity": [
+      {
+        "type": "CVSS_V3",
+        "score": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:L"
+      }
+    ],
+    "affected": [
+      {
+        "package": {
+          "ecosystem": "crates.io",
+          "name": "comrak"
+        },
+        "ranges": [
+          {
+            "type": "ECOSYSTEM",
+            "events": [
+              {
+                "introduced": "0"
+              },
+              {
+                "fixed": "0.17.0"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "references": [
+      {
+        "type": "WEB",
+        "url": "https://github.com/kivikakk/comrak/security/advisories/GHSA-xxmq-4vph-956w"
+      },
+      {
+        "type": "WEB",
+        "url": "https://github.com/commonmark/cmark/issues/354"
+      },
+      {
+        "type": "WEB",
+        "url": "https://github.com/kivikakk/comrak/commit/70f97f3ea4eae30ffbd1b94c764a3de2f1c41d2a"
+      },
+      {
+        "type": "PACKAGE",
+        "url": "https://github.com/kivikakk/comrak"
+      },
+      {
+        "type": "WEB",
+        "url": "https://github.com/kivikakk/comrak/releases/tag/0.17.0"
+      }
+    ],
+    "database_specific": {
+      "cwe_ids": [],
+      "severity": "MODERATE",
+      "github_reviewed": true,
+      "github_reviewed_at": "2023-03-28T14:44:04Z",
+      "nvd_published_at": null
+    }
+  },
+  {
+    "schema_version": "1.4.0",
+    "id": "GHSA-2qv5-7mw5-j3cg",
+    "modified": "2023-04-03T22:53:18Z",
+    "published": "2023-04-03T22:53:18Z",
+    "aliases": [],
+    "summary": "spin-rs initialisation failure in `Once::try_call_once` can lead to undefined behaviour for other initialisers",
+    "details": "`Once::try_call_once` is unsound if invoked more than once concurrently and any call fails to initialise successfully.\n",
+    "severity": [],
+    "affected": [
+      {
+        "package": {
+          "ecosystem": "crates.io",
+          "name": "spin"
+        },
+        "ranges": [
+          {
+            "type": "ECOSYSTEM",
+            "events": [
+              {
+                "introduced": "0.9.3"
+              },
+              {
+                "fixed": "0.9.8"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "references": [
+      {
+        "type": "WEB",
+        "url": "https://github.com/mvdnes/spin-rs/issues/148"
+      },
+      {
+        "type": "PACKAGE",
+        "url": "https://github.com/mvdnes/spin-rs"
+      },
+      {
+        "type": "WEB",
+        "url": "https://rustsec.org/advisories/RUSTSEC-2023-0031.html"
+      }
+    ],
+    "database_specific": {
+      "cwe_ids": [],
+      "severity": "MODERATE",
+      "github_reviewed": true,
+      "github_reviewed_at": "2023-04-03T22:53:18Z",
+      "nvd_published_at": null,
+      "vulnerable_methods": [
+        "Once::try_call_once"
+      ]
+    }
+  },
+  {
+    "schema_version": "1.4.0",
+    "id": "GHSA-ch89-5g45-qwc7",
+    "modified": "2023-04-27T17:55:57Z",
+    "published": "2023-04-27T17:08:37Z",
+    "aliases": [
+      "CVE-2023-30624"
+    ],
+    "summary": "Undefined Behavior in Rust runtime functions",
+    "details": "### Impact\n\nWasmtime's implementation of managing per-instance state, such as tables and memories, contains LLVM-level undefined behavior. This undefined behavior was found to cause runtime-level issues when compiled with LLVM 16 which causes some writes, which are critical for correctness, to be optimized away. Vulnerable versions of Wasmtime compiled with Rust 1.70, which is currently in beta, or later are known to have incorrectly compiled functions. Versions of Wasmtime compiled with the current Rust stable release, 1.69, and prior are not known at this time to have any issues, but can theoretically exhibit potential issues.\n\nThe underlying problem is that Wasmtime's runtime state for an instance involves a Rust-defined structure called `Instance` which has a trailing `VMContext` structure after it. This `VMContext` structure has a runtime-defined layout that is unique per-module. This representation cannot be expressed with safe code in Rust so `unsafe` code is required to maintain this state. The code doing this, however, has methods which take `&self` as an argument but modify data in the `VMContext` part of the allocation. This means that pointers derived from `&self` are mutated. This is typically not allowed, except in the presence of `UnsafeCell`, in Rust. When compiled to LLVM these functions have `noalias readonly` parameters which means it's UB to write through the pointers.\n\nWasmtime's internal representation and management of `VMContext` has been updated to use `&mut self` methods where appropriate. Additionally verification tools for `unsafe` code in Rust, such as `cargo miri`, are planned to be executed on the `main` branch soon to fix any Rust-level issues that may be exploited in future compiler versions.\n\nPrecomplied binaries available for Wasmtime from GitHub releases have been compiled with at most LLVM 15 so are not known to be vulnerable. As mentioned above, however, it's still recommended to update.\n\n### Patches\n\nWasmtime version 6.0.2, 7.0.1, and 8.0.1 have been issued which contain the patch necessary to work correctly on LLVM 16 and have no known UB on LLVM 15 and earlier.\n\n### Workarounds\n\nIf Wasmtime is compiled with Rust 1.69 and prior, which use LLVM 15, then there are no known issues. There is a theoretical possibility for UB to exploited, however, so it's recommended that users upgrade to a patched version of Wasmtime. Users using beta Rust (1.70 at this time) or nightly Rust (1.71 at this time) must update to a patched version to work correctly.\n\n### References\n\n* [GitHub Advisory](https://github.com/bytecodealliance/wasmtime/security/advisories/GHSA-ch89-5g45-qwc7)\n* [Mailing list announcement](https://groups.google.com/a/bytecodealliance.org/g/sec-announce/c/ecK-6G2yi90)\n\n### For more information\n\nIf you have any questions or comments about this advisory:\n\n* Reach out to us on [the Bytecode Alliance Zulip chat](https://bytecodealliance.zulipchat.com/#narrow/stream/217126-wasmtime)\n* Open an issue in [the bytecodealliance/wasmtime repository](https://github.com/bytecodealliance/wasmtime/)\n",
+    "severity": [
+      {
+        "type": "CVSS_V3",
+        "score": "CVSS:3.1/AV:N/AC:H/PR:H/UI:R/S:U/C:L/I:L/A:L"
+      }
+    ],
+    "affected": [
+      {
+        "package": {
+          "ecosystem": "crates.io",
+          "name": "wasmtime"
+        },
+        "ranges": [
+          {
+            "type": "ECOSYSTEM",
+            "events": [
+              {
+                "introduced": "0"
+              },
+              {
+                "fixed": "6.0.2"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "package": {
+          "ecosystem": "crates.io",
+          "name": "wasmtime"
+        },
+        "ranges": [
+          {
+            "type": "ECOSYSTEM",
+            "events": [
+              {
+                "introduced": "7.0.0"
+              },
+              {
+                "fixed": "7.0.1"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "package": {
+          "ecosystem": "crates.io",
+          "name": "wasmtime"
+        },
+        "ranges": [
+          {
+            "type": "ECOSYSTEM",
+            "events": [
+              {
+                "introduced": "8.0.0"
+              },
+              {
+                "fixed": "8.0.1"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "references": [
+      {
+        "type": "WEB",
+        "url": "https://github.com/bytecodealliance/wasmtime/security/advisories/GHSA-ch89-5g45-qwc7"
+      },
+      {
+        "type": "ADVISORY",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2023-30624"
+      },
+      {
+        "type": "WEB",
+        "url": "https://github.com/bytecodealliance/wasmtime/commit/0977952dcd9d482bff7c288868ccb52769b3a92e"
+      },
+      {
+        "type": "PACKAGE",
+        "url": "https://github.com/bytecodealliance/wasmtime"
+      },
+      {
+        "type": "WEB",
+        "url": "https://groups.google.com/a/bytecodealliance.org/g/sec-announce/c/ecK-6G2yi90"
+      }
+    ],
+    "database_specific": {
+      "cwe_ids": [
+        "CWE-758"
+      ],
+      "severity": "LOW",
+      "github_reviewed": true,
+      "github_reviewed_at": "2023-04-27T17:08:37Z",
+      "nvd_published_at": null
+    }
+  },
+  {
+    "schema_version": "1.4.0",
+    "id": "GHSA-f8vr-r385-rh5r",
+    "modified": "2023-04-13T15:58:41Z",
+    "published": "2023-04-11T15:30:30Z",
+    "aliases": [
+      "CVE-2023-26964"
+    ],
+    "summary": "h2 vulnerable to denial of service",
+    "details": "Hyper is an HTTP library for Rust and h2 is an HTTP 2.0 client & server implementation for Rust. An issue was discovered in h2 v0.2.4 when processing header frames. Both packages incorrectly process the HTTP2 `RST_STREAM` frames by not always releasing the memory immediately upon receiving the reset frame, leading to stream stacking. As a result, the memory and CPU usage are high which can lead to a Denial of Service (DoS).\n\nThis issue affects users only when dealing with http2 connections.",
+    "severity": [],
+    "affected": [
+      {
+        "package": {
+          "ecosystem": "crates.io",
+          "name": "h2"
+        },
+        "ranges": [
+          {
+            "type": "ECOSYSTEM",
+            "events": [
+              {
+                "introduced": "0"
+              },
+              {
+                "fixed": "0.3.17"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "references": [
+      {
+        "type": "ADVISORY",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2023-26964"
+      },
+      {
+        "type": "WEB",
+        "url": "https://github.com/hyperium/h2/issues/621"
+      },
+      {
+        "type": "WEB",
+        "url": "https://github.com/hyperium/hyper/issues/2877"
+      },
+      {
+        "type": "WEB",
+        "url": "https://github.com/hyperium/h2/pull/668"
+      },
+      {
+        "type": "PACKAGE",
+        "url": "https://github.com/hyperium/hyper"
+      }
+    ],
+    "database_specific": {
+      "cwe_ids": [],
+      "severity": "MODERATE",
+      "github_reviewed": true,
+      "github_reviewed_at": "2023-04-11T21:47:01Z",
+      "nvd_published_at": "2023-04-11T14:15:00Z"
+    }
+  },
+  {
+    "schema_version": "1.4.0",
+    "id": "GHSA-fjx5-qpf4-xjf2",
+    "modified": "2023-04-17T16:32:26Z",
+    "published": "2023-04-17T16:32:26Z",
+    "aliases": [],
+    "summary": "Parsing borsh messages with ZST which are not-copy/clone is unsound",
+    "details": "Affected versions of borsh cause undefined behavior when zero-sized-types (ZST) are parsed and the Copy/Clone traits are not implemented/derived. For instance if 1000 instances of a ZST are deserialized, and the ZST is not copy (this can be achieved through a singleton), then accessing/writing to deserialized data will cause a segmentation fault.\n\nThere is currently no way for borsh to read data without also providing a Rust type. Therefore, if you are not using ZST for serialization, then you are not affected by this issue. \n",
+    "severity": [],
+    "affected": [
+      {
+        "package": {
+          "ecosystem": "crates.io",
+          "name": "borsh"
+        },
+        "ranges": [
+          {
+            "type": "ECOSYSTEM",
+            "events": [
+              {
+                "introduced": "0"
+              },
+              {
+                "last_affected": "0.10.3"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "references": [
+      {
+        "type": "WEB",
+        "url": "https://github.com/near/borsh-rs/issues/19"
+      },
+      {
+        "type": "PACKAGE",
+        "url": "https://github.com/near/borsh-rs"
+      },
+      {
+        "type": "WEB",
+        "url": "https://rustsec.org/advisories/RUSTSEC-2023-0033.html"
+      }
+    ],
+    "database_specific": {
+      "cwe_ids": [],
+      "severity": "MODERATE",
+      "github_reviewed": true,
+      "github_reviewed_at": "2023-04-17T16:32:26Z",
+      "nvd_published_at": null
+    }
+  },
+  {
+    "schema_version": "1.4.0",
+    "id": "GHSA-fq33-vmhv-48xh",
+    "modified": "2023-04-07T19:23:49Z",
+    "published": "2023-04-07T19:23:49Z",
+    "aliases": [],
+    "summary": "ntru-rs has unsound FFI: Wrong API usage causes write past allocated area",
+    "details": "The following usage causes undefined behavior.\n```rust\nlet kp: ntru::types::KeyPair = …;\nkp.get_public().export(Default::default())\n```\n\nWhen compiled with debug assertions, the code above will trigger a `attempt to subtract with overflow` panic before UB occurs.\nOther mistakes (e.g. using `EncParams` from a different key) may always trigger UB.\n\nLikely, older versions of this crate are also affected, but have not been tested.\n",
+    "severity": [],
+    "affected": [
+      {
+        "package": {
+          "ecosystem": "crates.io",
+          "name": "ntru"
+        },
+        "ranges": [
+          {
+            "type": "ECOSYSTEM",
+            "events": [
+              {
+                "introduced": "0.4.3"
+              },
+              {
+                "last_affected": "0.5.6"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "references": [
+      {
+        "type": "WEB",
+        "url": "https://github.com/FrinkGlobal/ntru-rs/issues/8"
+      },
+      {
+        "type": "PACKAGE",
+        "url": "https://github.com/FrinkGlobal/ntru-rs"
+      },
+      {
+        "type": "WEB",
+        "url": "https://rustsec.org/advisories/RUSTSEC-2023-0032.html"
+      }
+    ],
+    "database_specific": {
+      "cwe_ids": [],
+      "severity": "MODERATE",
+      "github_reviewed": true,
+      "github_reviewed_at": "2023-04-07T19:23:49Z",
+      "nvd_published_at": null,
+      "vulnerable_methods": [
+        "get_public"
+      ]
+    }
+  },
+  {
+    "schema_version": "1.4.0",
+    "id": "GHSA-jc97-h3h9-7xh6",
+    "modified": "2023-04-03T17:18:51Z",
+    "published": "2023-04-03T17:18:51Z",
+    "aliases": [
+      "CVE-2023-26103"
+    ],
+    "summary": "Regular Expression Denial of Service in Deno.upgradeWebSocket API",
+    "details": "### Impact\nVersions of the package deno before 1.31.0 are vulnerable to Regular Expression Denial of Service (ReDoS) due to the upgradeWebSocket function, which contains regexes in the form of /s*,s*/, used for splitting the Connection/Upgrade header. A specially crafted Connection/Upgrade header can be used to significantly slow down a web socket server. \n\n### Patches\nIt is recommended that users upgrade to Deno 1.31.0.\n\n",
+    "severity": [
+      {
+        "type": "CVSS_V3",
+        "score": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:L"
+      }
+    ],
+    "affected": [
+      {
+        "package": {
+          "ecosystem": "crates.io",
+          "name": "deno"
+        },
+        "ranges": [
+          {
+            "type": "ECOSYSTEM",
+            "events": [
+              {
+                "introduced": "1.12.0"
+              },
+              {
+                "fixed": "1.31.0"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "references": [
+      {
+        "type": "WEB",
+        "url": "https://github.com/denoland/deno/security/advisories/GHSA-jc97-h3h9-7xh6"
+      },
+      {
+        "type": "ADVISORY",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2023-26103"
+      },
+      {
+        "type": "WEB",
+        "url": "https://github.com/denoland/deno/pull/17722"
+      },
+      {
+        "type": "WEB",
+        "url": "https://github.com/denoland/deno/commit/cf06a7c7e672880e1b38598fe445e2c50b4a9d06"
+      },
+      {
+        "type": "PACKAGE",
+        "url": "https://github.com/denoland/deno"
+      },
+      {
+        "type": "WEB",
+        "url": "https://github.com/denoland/deno/blob/2b247be517d789a37e532849e2e40b724af0918f/ext/http/01_http.js#L395-L409"
+      },
+      {
+        "type": "WEB",
+        "url": "https://github.com/denoland/deno/releases/tag/v1.31.0"
+      },
+      {
+        "type": "WEB",
+        "url": "https://security.snyk.io/vuln/SNYK-RUST-DENO-3315970"
+      }
+    ],
+    "database_specific": {
+      "cwe_ids": [
+        "CWE-1333"
+      ],
+      "severity": "MODERATE",
+      "github_reviewed": true,
+      "github_reviewed_at": "2023-04-03T17:18:51Z",
+      "nvd_published_at": null,
+      "vulnerable_methods": [
+        "upgradeWebSocket"
+      ]
+    }
+  },
+  {
+    "schema_version": "1.4.0",
+    "id": "GHSA-mjv9-vp6w-3rc9",
+    "modified": "2023-04-26T16:01:10Z",
+    "published": "2023-04-26T16:01:10Z",
+    "aliases": [
+      "CVE-2023-30610"
+    ],
+    "summary": "AWS SDK for Rust will log AWS credentials when TRACE-level logging is enabled for request sending",
+    "details": "The `aws_sigv4::SigningParams` struct had a derived `Debug` implementation. When debug-formatted, it would include a user's AWS access key, AWS secret key, and security token in plaintext. When TRACE-level logging is enabled for an SDK, `SigningParams` is printed, thereby revealing those credentials to anyone with access to logs.\n\n### Impact\nAll users of the AWS SDK for Rust who enabled TRACE-level logging, either globally (e.g. `RUST_LOG=trace`), or for the `aws-sigv4` crate specifically.\n\n### Patches\n- Versions >= `0.55.1`\n- `0.54.2`\n- `0.53.2`\n- `0.52.1`\n- `0.51.1`\n- `0.50.1`\n- `0.49.1`\n- `0.48.1`\n- `0.47.1`\n- `0.46.1`\n- `0.15.1`\n- `0.14.1`\n- `0.13.1`\n- `0.12.1`\n- `0.11.1`\n- `0.10.2`\n- `0.9.1`\n- `0.8.1`\n- `0.7.1`\n- `0.6.1`\n- `0.5.3`\n- `0.3.1`\n- `0.2.1`\n\n### Workarounds\nDisable TRACE-level logging for AWS Rust SDK crates.\n",
+    "severity": [
+      {
+        "type": "CVSS_V3",
+        "score": "CVSS:3.1/AV:L/AC:L/PR:L/UI:N/S:U/C:H/I:N/A:N"
+      }
+    ],
+    "affected": [
+      {
+        "package": {
+          "ecosystem": "crates.io",
+          "name": "aws-sigv4"
+        },
+        "ranges": [
+          {
+            "type": "ECOSYSTEM",
+            "events": [
+              {
+                "introduced": "0.55.0"
+              },
+              {
+                "fixed": "0.55.1"
+              }
+            ]
+          }
+        ],
+        "versions": [
+          "0.55.0"
+        ]
+      },
+      {
+        "package": {
+          "ecosystem": "crates.io",
+          "name": "aws-sigv4"
+        },
+        "ranges": [
+          {
+            "type": "ECOSYSTEM",
+            "events": [
+              {
+                "introduced": "0.54.1"
+              },
+              {
+                "fixed": "0.54.2"
+              }
+            ]
+          }
+        ],
+        "versions": [
+          "0.54.1"
+        ]
+      },
+      {
+        "package": {
+          "ecosystem": "crates.io",
+          "name": "aws-sigv4"
+        },
+        "ranges": [
+          {
+            "type": "ECOSYSTEM",
+            "events": [
+              {
+                "introduced": "0.53.1"
+              },
+              {
+                "fixed": "0.53.2"
+              }
+            ]
+          }
+        ],
+        "versions": [
+          "0.53.1"
+        ]
+      },
+      {
+        "package": {
+          "ecosystem": "crates.io",
+          "name": "aws-sigv4"
+        },
+        "ranges": [
+          {
+            "type": "ECOSYSTEM",
+            "events": [
+              {
+                "introduced": "0.52.0"
+              },
+              {
+                "fixed": "0.52.1"
+              }
+            ]
+          }
+        ],
+        "versions": [
+          "0.52.0"
+        ]
+      },
+      {
+        "package": {
+          "ecosystem": "crates.io",
+          "name": "aws-sigv4"
+        },
+        "ranges": [
+          {
+            "type": "ECOSYSTEM",
+            "events": [
+              {
+                "introduced": "0.51.0"
+              },
+              {
+                "fixed": "0.51.1"
+              }
+            ]
+          }
+        ],
+        "versions": [
+          "0.51.0"
+        ]
+      },
+      {
+        "package": {
+          "ecosystem": "crates.io",
+          "name": "aws-sigv4"
+        },
+        "ranges": [
+          {
+            "type": "ECOSYSTEM",
+            "events": [
+              {
+                "introduced": "0.49.0"
+              },
+              {
+                "fixed": "0.49.1"
+              }
+            ]
+          }
+        ],
+        "versions": [
+          "0.49.0"
+        ]
+      },
+      {
+        "package": {
+          "ecosystem": "crates.io",
+          "name": "aws-sigv4"
+        },
+        "ranges": [
+          {
+            "type": "ECOSYSTEM",
+            "events": [
+              {
+                "introduced": "0.48.0"
+              },
+              {
+                "fixed": "0.48.1"
+              }
+            ]
+          }
+        ],
+        "versions": [
+          "0.48.0"
+        ]
+      },
+      {
+        "package": {
+          "ecosystem": "crates.io",
+          "name": "aws-sigv4"
+        },
+        "ranges": [
+          {
+            "type": "ECOSYSTEM",
+            "events": [
+              {
+                "introduced": "0.47.0"
+              },
+              {
+                "fixed": "0.47.1"
+              }
+            ]
+          }
+        ],
+        "versions": [
+          "0.47.0"
+        ]
+      },
+      {
+        "package": {
+          "ecosystem": "crates.io",
+          "name": "aws-sigv4"
+        },
+        "ranges": [
+          {
+            "type": "ECOSYSTEM",
+            "events": [
+              {
+                "introduced": "0.46.0"
+              },
+              {
+                "fixed": "0.46.1"
+              }
+            ]
+          }
+        ],
+        "versions": [
+          "0.46.0"
+        ]
+      },
+      {
+        "package": {
+          "ecosystem": "crates.io",
+          "name": "aws-sigv4"
+        },
+        "ranges": [
+          {
+            "type": "ECOSYSTEM",
+            "events": [
+              {
+                "introduced": "0.15.0"
+              },
+              {
+                "fixed": "0.15.1"
+              }
+            ]
+          }
+        ],
+        "versions": [
+          "0.15.0"
+        ]
+      },
+      {
+        "package": {
+          "ecosystem": "crates.io",
+          "name": "aws-sigv4"
+        },
+        "ranges": [
+          {
+            "type": "ECOSYSTEM",
+            "events": [
+              {
+                "introduced": "0.14.0"
+              },
+              {
+                "fixed": "0.14.1"
+              }
+            ]
+          }
+        ],
+        "versions": [
+          "0.14.0"
+        ]
+      },
+      {
+        "package": {
+          "ecosystem": "crates.io",
+          "name": "aws-sigv4"
+        },
+        "ranges": [
+          {
+            "type": "ECOSYSTEM",
+            "events": [
+              {
+                "introduced": "0.13.0"
+              },
+              {
+                "fixed": "0.13.1"
+              }
+            ]
+          }
+        ],
+        "versions": [
+          "0.13.0"
+        ]
+      },
+      {
+        "package": {
+          "ecosystem": "crates.io",
+          "name": "aws-sigv4"
+        },
+        "ranges": [
+          {
+            "type": "ECOSYSTEM",
+            "events": [
+              {
+                "introduced": "0.12.0"
+              },
+              {
+                "fixed": "0.12.1"
+              }
+            ]
+          }
+        ],
+        "versions": [
+          "0.12.0"
+        ]
+      },
+      {
+        "package": {
+          "ecosystem": "crates.io",
+          "name": "aws-sigv4"
+        },
+        "ranges": [
+          {
+            "type": "ECOSYSTEM",
+            "events": [
+              {
+                "introduced": "0.11.0"
+              },
+              {
+                "fixed": "0.11.1"
+              }
+            ]
+          }
+        ],
+        "versions": [
+          "0.11.0"
+        ]
+      },
+      {
+        "package": {
+          "ecosystem": "crates.io",
+          "name": "aws-sigv4"
+        },
+        "ranges": [
+          {
+            "type": "ECOSYSTEM",
+            "events": [
+              {
+                "introduced": "0.10.1"
+              },
+              {
+                "fixed": "0.10.2"
+              }
+            ]
+          }
+        ],
+        "versions": [
+          "0.10.1"
+        ]
+      },
+      {
+        "package": {
+          "ecosystem": "crates.io",
+          "name": "aws-sigv4"
+        },
+        "ranges": [
+          {
+            "type": "ECOSYSTEM",
+            "events": [
+              {
+                "introduced": "0.9.0"
+              },
+              {
+                "fixed": "0.9.1"
+              }
+            ]
+          }
+        ],
+        "versions": [
+          "0.9.0"
+        ]
+      },
+      {
+        "package": {
+          "ecosystem": "crates.io",
+          "name": "aws-sigv4"
+        },
+        "ranges": [
+          {
+            "type": "ECOSYSTEM",
+            "events": [
+              {
+                "introduced": "0.8.0"
+              },
+              {
+                "fixed": "0.8.1"
+              }
+            ]
+          }
+        ],
+        "versions": [
+          "0.8.0"
+        ]
+      },
+      {
+        "package": {
+          "ecosystem": "crates.io",
+          "name": "aws-sigv4"
+        },
+        "ranges": [
+          {
+            "type": "ECOSYSTEM",
+            "events": [
+              {
+                "introduced": "0.7.0"
+              },
+              {
+                "fixed": "0.7.1"
+              }
+            ]
+          }
+        ],
+        "versions": [
+          "0.7.0"
+        ]
+      },
+      {
+        "package": {
+          "ecosystem": "crates.io",
+          "name": "aws-sigv4"
+        },
+        "ranges": [
+          {
+            "type": "ECOSYSTEM",
+            "events": [
+              {
+                "introduced": "0.6.0"
+              },
+              {
+                "fixed": "0.6.1"
+              }
+            ]
+          }
+        ],
+        "versions": [
+          "0.6.0"
+        ]
+      },
+      {
+        "package": {
+          "ecosystem": "crates.io",
+          "name": "aws-sigv4"
+        },
+        "ranges": [
+          {
+            "type": "ECOSYSTEM",
+            "events": [
+              {
+                "introduced": "0.5.2"
+              },
+              {
+                "fixed": "0.5.3"
+              }
+            ]
+          }
+        ],
+        "versions": [
+          "0.5.2"
+        ]
+      },
+      {
+        "package": {
+          "ecosystem": "crates.io",
+          "name": "aws-sigv4"
+        },
+        "ranges": [
+          {
+            "type": "ECOSYSTEM",
+            "events": [
+              {
+                "introduced": "0.4.1"
+              },
+              {
+                "fixed": "0.4.2"
+              }
+            ]
+          }
+        ],
+        "versions": [
+          "0.4.1"
+        ]
+      },
+      {
+        "package": {
+          "ecosystem": "crates.io",
+          "name": "aws-sigv4"
+        },
+        "ranges": [
+          {
+            "type": "ECOSYSTEM",
+            "events": [
+              {
+                "introduced": "0.3.0"
+              },
+              {
+                "fixed": "0.3.1"
+              }
+            ]
+          }
+        ],
+        "versions": [
+          "0.3.0"
+        ]
+      },
+      {
+        "package": {
+          "ecosystem": "crates.io",
+          "name": "aws-sigv4"
+        },
+        "ranges": [
+          {
+            "type": "ECOSYSTEM",
+            "events": [
+              {
+                "introduced": "0.2.0"
+              },
+              {
+                "fixed": "0.2.1"
+              }
+            ]
+          }
+        ],
+        "versions": [
+          "0.2.0"
+        ]
+      }
+    ],
+    "references": [
+      {
+        "type": "WEB",
+        "url": "https://github.com/awslabs/aws-sdk-rust/security/advisories/GHSA-mjv9-vp6w-3rc9"
+      },
+      {
+        "type": "ADVISORY",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2023-30610"
+      },
+      {
+        "type": "PACKAGE",
+        "url": "https://github.com/awslabs/aws-sdk-rust"
+      }
+    ],
+    "database_specific": {
+      "cwe_ids": [
+        "CWE-532"
+      ],
+      "severity": "MODERATE",
+      "github_reviewed": true,
+      "github_reviewed_at": "2023-04-26T16:01:10Z",
+      "nvd_published_at": null,
+      "vulnerable_methods": [
+        "`SigningParams`"
+      ]
+    }
+  },
+  {
+    "schema_version": "1.4.0",
+    "id": "GHSA-qvc4-78gw-pv8p",
+    "modified": "2023-04-24T16:47:24Z",
+    "published": "2023-04-24T16:47:24Z",
+    "aliases": [],
+    "summary": "Adverserial use of `make_bitflags!` macro can cause undefined behavior",
+    "details": "The macro relied on an expression of the form `Enum::Variant` always being a\nvariant of the enum. However, it may also be an associated integer constant, in\nwhich case there's no guarantee that the value of said constant consists only of\nbits valid for this bitflag type.\n\nThus, code like this could create an invalid `BitFlags<Test>`, which would cause\niterating over it to trigger undefined behavior. As the debug formatter\ninternally iterates over the value, it is also affected.\n\n```rust\nuse enumflags2::{bitflags, make_bitflags};\n\n#[bitflags]\n#[repr(u8)]\n#[derive(Copy, Clone, Debug)]\nenum Test {\n    A = 1,\n    B = 2,\n}\n\nimpl Test {\n    const C: u8 = 69;\n}\n\nfn main() {\n    let x = make_bitflags!(Test::{C});\n    // printing or iterating over x is UB\n}\n```\n",
+    "severity": [],
+    "affected": [
+      {
+        "package": {
+          "ecosystem": "crates.io",
+          "name": "enumflags2"
+        },
+        "ranges": [
+          {
+            "type": "ECOSYSTEM",
+            "events": [
+              {
+                "introduced": "0.7.0"
+              },
+              {
+                "fixed": "0.7.7"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "references": [
+      {
+        "type": "PACKAGE",
+        "url": "https://github.com/meithecatte/enumflags2"
+      },
+      {
+        "type": "WEB",
+        "url": "https://github.com/meithecatte/enumflags2/releases/tag/v0.7.7"
+      },
+      {
+        "type": "WEB",
+        "url": "https://rustsec.org/advisories/RUSTSEC-2023-0035.html"
+      }
+    ],
+    "database_specific": {
+      "cwe_ids": [],
+      "severity": "MODERATE",
+      "github_reviewed": true,
+      "github_reviewed_at": "2023-04-24T16:47:24Z",
+      "nvd_published_at": null,
+      "vulnerable_methods": [
+        "make_bitflags!"
+      ]
+    }
+  }
+]

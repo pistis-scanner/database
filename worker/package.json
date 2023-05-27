@@ -1,0 +1,27 @@
+{
+  "name": "code-to-image",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start:dev": "NODE_ENV=development yarn nodemon --watch \"src/**/*.ts\" --ignore \"node_modules/**/*\" --ignore \"tests/**/*\" --exec ts-node src/index.ts",
+    "start:prod": "node build/index.js",
+    "build": "yarn tsc --project tsconfig.json",
+    "test": "mocha --require ts-node/register \"src/test/**/*.test.ts\" --exit"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/chai": "^4.3.1",
+    "@types/mocha": "^9.1.1",
+    "@types/node": "^18.0.0",
+    "chai": "^4.3.6",
+    "mocha": "^10.0.0",
+    "nodemon": "^2.0.16",
+    "ts-node": "^10.8.1",
+    "typescript": "^4.7.4",
+    "yarn": "^1.22.19"
+  },
+  "dependencies": {}
+}

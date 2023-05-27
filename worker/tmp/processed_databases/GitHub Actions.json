@@ -1,0 +1,212 @@
+[
+  {
+    "schema_version": "1.4.0",
+    "id": "GHSA-6q4m-7476-932w",
+    "modified": "2023-03-17T18:33:12Z",
+    "published": "2023-03-13T20:43:33Z",
+    "aliases": [
+      "CVE-2023-27581"
+    ],
+    "summary": "github-slug-action vulnerable to arbitrary code execution",
+    "details": "### Impact\n\nThis action uses the `github.head_ref` parameter in an insecure way. \n\nThis vulnerability can be triggered by any user on GitHub on any workflow using the action on pull requests. They just need to create a pull request with a branch name, which can contain the attack payload. (Note that first-time PR requests will not be run - but the attacker can submit a valid PR before submitting an invalid PR).  This can be used to execute code on the GitHub runners (potentially use it for crypto-mining, and waste your resources) and to exfiltrate any secrets you use in the CI pipeline.\n\n### Patches\n\n> Pass the variable as an environment variable and then use the environment variable instead of substituting it directly.\n\nPatched action is available on tag **v4**, tag **v4.4.1**, and any tag beyond.\n\n### Workarounds\n\nNo workaround is available if impacted, please upgrade the version\n\n> ℹ️ **v3** and **v4** are compatibles.\n\n### References\n\n[Here](https://securitylab.github.com/research/github-actions-untrusted-input/) is a set of blog posts by Github's security team explaining this issue.\n\n### Thanks\n\nThanks to the team of researchers from Purdue University, who are working on finding vulnerabilities in CI/CD configurations of open-source software. Their tool detected this security vulnerability.\n\n",
+    "severity": [
+      {
+        "type": "CVSS_V3",
+        "score": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:H"
+      }
+    ],
+    "affected": [
+      {
+        "package": {
+          "ecosystem": "GitHub Actions",
+          "name": "rlespinasse/github-slug-action"
+        },
+        "ranges": [
+          {
+            "type": "ECOSYSTEM",
+            "events": [
+              {
+                "introduced": "4.0.0"
+              },
+              {
+                "fixed": "4.4.1"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "references": [
+      {
+        "type": "WEB",
+        "url": "https://github.com/rlespinasse/github-slug-action/security/advisories/GHSA-6q4m-7476-932w"
+      },
+      {
+        "type": "ADVISORY",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2023-27581"
+      },
+      {
+        "type": "WEB",
+        "url": "https://github.com/rlespinasse/github-slug-action/commit/102b1a064a9b145e56556e22b18b19c624538d94"
+      },
+      {
+        "type": "PACKAGE",
+        "url": "https://github.com/rlespinasse/github-slug-action"
+      },
+      {
+        "type": "WEB",
+        "url": "https://github.com/rlespinasse/github-slug-action/releases/tag/v4.4.1"
+      },
+      {
+        "type": "WEB",
+        "url": "https://securitylab.github.com/research/github-actions-untrusted-input/"
+      }
+    ],
+    "database_specific": {
+      "cwe_ids": [
+        "CWE-77"
+      ],
+      "severity": "HIGH",
+      "github_reviewed": true,
+      "github_reviewed_at": "2023-03-13T20:43:33Z",
+      "nvd_published_at": "2023-03-13T21:15:00Z",
+      "vulnerable_methods": [
+        "github.head_ref"
+      ]
+    }
+  },
+  {
+    "schema_version": "1.4.0",
+    "id": "GHSA-p756-rfxh-x63h",
+    "modified": "2023-03-07T20:07:27Z",
+    "published": "2023-03-07T20:07:27Z",
+    "aliases": [
+      "CVE-2023-23939"
+    ],
+    "summary": "Azure/setup-kubectl: Escalation of privilege vulnerability for v3 and lower",
+    "details": "### Impact\n\nThis vulnerability only impacts versions `v2` and lower. An insecure temporary creation of a file allows other actors on the Actions runner to replace the Kubectl binary created by this action because it is world writable. This Kubectl tool installer runs `fs.chmodSync(kubectlPath, 777)` to set permissions on the Kubectl binary, however, this allows any local user to replace the Kubectl binary. This allows privilege escalation to the user that can also run kubectl, most likely root. This attack is only possible if an attacker somehow breached the GitHub actions runner or if a user is utilizing an Action that maliciously executes this attack.\n\nNo impacted customers have been reported.\n\n### Patches\n\nThis has been fixed and released in all versions `v3` and later. 755 permissions are used instead.\n\n### Workarounds\n\nIf users absolutely cannot upgrade to `v3` or higher than they should be extra diligent of the other GitHub actions they are using in a workflow and ensure that their GitHub actions runner is secure.\n",
+    "severity": [
+      {
+        "type": "CVSS_V3",
+        "score": "CVSS:3.1/AV:A/AC:H/PR:L/UI:N/S:C/C:N/I:L/A:N"
+      }
+    ],
+    "affected": [
+      {
+        "package": {
+          "ecosystem": "GitHub Actions",
+          "name": "Azure/setup-kubectl"
+        },
+        "ranges": [
+          {
+            "type": "ECOSYSTEM",
+            "events": [
+              {
+                "introduced": "0"
+              },
+              {
+                "fixed": "3"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "references": [
+      {
+        "type": "WEB",
+        "url": "https://github.com/Azure/setup-kubectl/security/advisories/GHSA-p756-rfxh-x63h"
+      },
+      {
+        "type": "ADVISORY",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2023-23939"
+      },
+      {
+        "type": "WEB",
+        "url": "https://github.com/Azure/setup-kubectl/commit/d449d75495d2b9d1463555bb00ca3dca77a42ab6"
+      },
+      {
+        "type": "PACKAGE",
+        "url": "https://github.com/Azure/setup-kubectl"
+      }
+    ],
+    "database_specific": {
+      "cwe_ids": [
+        "CWE-732"
+      ],
+      "severity": "LOW",
+      "github_reviewed": true,
+      "github_reviewed_at": "2023-03-07T20:07:27Z",
+      "nvd_published_at": "2023-03-06T19:15:00Z"
+    }
+  },
+  {
+    "schema_version": "1.4.0",
+    "id": "GHSA-rg3q-prf8-qxmp",
+    "modified": "2023-04-25T16:34:43Z",
+    "published": "2023-04-24T22:32:32Z",
+    "aliases": [
+      "CVE-2023-30623"
+    ],
+    "summary": "Arbitrary command injection in embano1/wip ",
+    "details": "## Summary\nThe  `embano1/wip` action uses the `github.event.pull_request.title` parameter in an insecure way. The title parameter is used in a run statement - resulting in a command injection vulnerability due to string interpolation.\n\n## Details and Impact\nThis vulnerability can be triggered by any user on GitHub. They just need to create a pull request with a commit message containing an exploit. (Note that first-time PR requests will not be run - but the attacker can submit a valid PR before submitting an invalid PR). The commit can be genuine, but the commit message can be malicious. \n\nThis can be used to execute code on the GitHub runners (potentially use it for crypto-mining, and waste your resources) and can be used to exfiltrate any secrets that you use in the CI pipeline (including repository tokens). [Here](https://securitylab.github.com/research/github-actions-untrusted-input/) is a set of blog posts by Github's security team explaining this issue.\n\n## How to update existing workflows\n\nReplace the following line in your workflow using this action with the `v2` branch name or commit pointing to this branch:\n\n```yaml\n    uses: embano1/wip@v2\n```\n\nOr using the exact commit:\n\n```yaml\n    uses: embano1/wip@c25450f77ed02c20d00b76ee3b33ff43838739a2 # v2\n```",
+    "severity": [
+      {
+        "type": "CVSS_V3",
+        "score": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:H"
+      }
+    ],
+    "affected": [
+      {
+        "package": {
+          "ecosystem": "GitHub Actions",
+          "name": "embano1/wip"
+        },
+        "ranges": [
+          {
+            "type": "ECOSYSTEM",
+            "events": [
+              {
+                "introduced": "0"
+              },
+              {
+                "fixed": "2"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "references": [
+      {
+        "type": "WEB",
+        "url": "https://github.com/embano1/wip/security/advisories/GHSA-rg3q-prf8-qxmp"
+      },
+      {
+        "type": "ADVISORY",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2023-30623"
+      },
+      {
+        "type": "WEB",
+        "url": "https://github.com/embano1/wip/commit/c25450f77ed02c20d00b76ee3b33ff43838739a2"
+      },
+      {
+        "type": "PACKAGE",
+        "url": "https://github.com/embano1/wip"
+      },
+      {
+        "type": "WEB",
+        "url": "https://securitylab.github.com/research/github-actions-untrusted-input/"
+      }
+    ],
+    "database_specific": {
+      "cwe_ids": [
+        "CWE-77"
+      ],
+      "severity": "HIGH",
+      "github_reviewed": true,
+      "github_reviewed_at": "2023-04-24T22:32:32Z",
+      "nvd_published_at": null
+    }
+  }
+]

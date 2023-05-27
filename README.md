@@ -5,17 +5,13 @@ This project contains the advisories databases (based on github databases) with 
 We generate a single json file per language, so when you run the tool to find vulnerabilities you only check against the vulenrabilities for that language
 
 ## Structure
-
+```text
 |
-
 |--- README.md. 
-
 |--- advisories - Advisory database folder. This should be similar to the github advisory database, with the added info. 
-
 |--- worker - The scripts to manage the db
-
 |-------advisory-database - The github advisory database as of 2023-05-02, we use this to generate our database databases. While we don't finish parsing the entire database for python this folder will be kept here so we can finish for the current advisories, and in the future we will only check new commits from this point in time forward. 
-
+```
 
 ## Usage
 

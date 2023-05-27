@@ -1,6 +1,9 @@
 name: Release Databases
-on:
-  workflow_dispatch:
+
+on: 
+  push:
+    tags:
+    - '*'
 
 jobs:
   build_and_publish:
@@ -26,5 +29,4 @@ jobs:
         with:
           artifacts: "worker/tmp/processed_databases/PyPI.json"
           name: ${{github.sha}}
-          tag: ${{github.sha}}
         

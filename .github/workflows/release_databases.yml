@@ -26,4 +26,5 @@ jobs:
         with:
           artifacts: "worker/tmp/processed_databases/PyPI.json"
           name: ${{github.sha}}
+          tag: ${{github.sha}}
         

@@ -25,5 +25,5 @@ jobs:
         uses: ncipollo/release-action@a2e71bdd4e7dab70ca26a852f29600c98b33153e
         with:
           artifacts: "worker/tmp/processed_databases/PyPI.json"
-          name: ${{GITHUB_SHA}}
+          name: ${{github.sha}}
         

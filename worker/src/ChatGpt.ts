@@ -61,21 +61,32 @@ Your response needs to be only the method name in case you find it. If you don't
     return await this.ask(prompt) as any
   }
 
-  private async request(relative_path: string, method: string, body: any): Promise<any> {
+  private async request(relative_path: string, method: string, body: any, retry = true): Promise<any> {
     const headers = {
       authorization: `Bearer ${this.apiKey}`,
       "Content-Type": "application/json"
     }
 
+    if (!retry) await new Promise(resolve => setTimeout(resolve, 3000))
+
     return new Promise((resolve, reject) => {
+
       fetch(`https://api.openai.com/v1${relative_path}`, {
         method,
         headers,
         body: JSON.stringify(body)
       })
         .then(res => resolve(res.json()))
-        .catch(err => reject(err))
-    })
+        .catch(err => {
+          if (retry) {
+            console.log("Request failed... Retrying")
+            return this.request(relative_path, method, body, false)
+          }
+          else
+            return reject(err)
 
+        })
+
+    })
   }
 }

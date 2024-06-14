@@ -1,7 +1,7 @@
 name: Release Databases
 
 on:
-  # push:
+  push:
   #   tags:
   #   - '*'
   workflow_dispatch:
@@ -19,10 +19,8 @@ jobs:
           yarn install
 
       - name: Generate Databases
-        working-directory: worker
         run: |
-          mkdir -p tmp
-          yarn ts-node src/CreateDbFilePerLanguage.ts
+          yarn run start
 
       - name: Create Python Release
         uses: ncipollo/release-action@a2e71bdd4e7dab70ca26a852f29600c98b33153e

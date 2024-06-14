@@ -1,7 +1,7 @@
 name: Release Databases
 
 on:
-  # push:
+  push:
   #   tags:
   #   - '*'
   workflow_dispatch:

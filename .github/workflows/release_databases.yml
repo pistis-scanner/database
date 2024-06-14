@@ -22,9 +22,14 @@ jobs:
         run: |
           yarn run start
 
+      - name: Get current date
+        id: get-date
+        run: echo "date=$(date +'%Y-%m-%d')" >> "$GITHUB_OUTPUT"
+
       - name: Create Python Release
         uses: ncipollo/release-action@a2e71bdd4e7dab70ca26a852f29600c98b33153e
         with:
           artifacts: "output/PyPI.json"
           name: ${{github.sha}}
           makeLatest: true
+          tag: ${{ steps.get-date.outputs.date }}

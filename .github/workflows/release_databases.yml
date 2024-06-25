@@ -5,6 +5,9 @@ on:
   #   tags:
   #   - '*'
   workflow_dispatch:
+  schedule:
+    # * is a special character in YAML so you have to quote this string
+    - cron:  '0 0 * * *' # every day
 
 jobs:
   build_and_publish:
@@ -26,10 +29,10 @@ jobs:
         id: get-date
         run: echo "date=$(date +'%Y-%m-%d')" >> "$GITHUB_OUTPUT"
 
-      - name: Create Python Release
+      - name: Create Release
         uses: ncipollo/release-action@a2e71bdd4e7dab70ca26a852f29600c98b33153e
         with:
-          artifacts: "output/PyPI.json"
+          artifacts: "output/PyPI.json,output/npm.json"
           name: ${{github.sha}}
           makeLatest: true
           tag: ${{ steps.get-date.outputs.date }}
